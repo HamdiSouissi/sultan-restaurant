@@ -12,40 +12,40 @@ $isChecked = fn(string $k, $fallback) => $hasOld ? isset($_SESSION['old'][$k]) :
 ?>
 <section class="pg-head">
   <div>
-    <p class="eyebrow">La carte · <?= count($dishes) ?> plat<?= count($dishes) > 1 ? 's' : '' ?></p>
-    <h2 class="pg-title">Composer <em>le menu.</em></h2>
-    <p class="pg-sub">Chaque plat, son prix, sa composition et sa disponibilité du jour.</p>
+    <p class="eyebrow">Il menù · <?= count($dishes) ?> piatto<?= count($dishes) > 1 ? 'i' : '' ?></p>
+    <h2 class="pg-title">Comporre <em>il menù.</em></h2>
+    <p class="pg-sub">Ogni piatto, il suo prezzo, la sua composizione e la disponibilità del giorno.</p>
   </div>
-  <div class="pg-acts"><a class="abtn gold" href="/admin/carte?new=1#editeur">Nouveau plat</a></div>
+  <div class="pg-acts"><a class="abtn gold" href="/admin/carte?new=1#editeur">Nuovo piatto</a></div>
 </section>
 
 <form class="toolbar" method="get" action="/admin/carte">
-  <input type="search" name="q" value="<?=e($q)?>" placeholder="Rechercher un plat ou un ingrédient…" aria-label="Rechercher">
-  <select name="cat" aria-label="Filtrer par catégorie">
-    <option value="0">Toutes les catégories</option>
+  <input type="search" name="q" value="<?=e($q)?>" placeholder="Cerca un piatto o un ingrediente…" aria-label="Cerca">
+  <select name="cat" aria-label="Filtra per categoria">
+    <option value="0">Tutte le categorie</option>
     <?php foreach ($categories as $c): ?>
       <option value="<?= (int)$c['id'] ?>"<?= $cat === (int)$c['id'] ? ' selected' : ''?>><?=e($c['name'])?></option>
     <?php endforeach; ?>
   </select>
-  <button class="abtn line sm">Filtrer</button>
-  <?php if ($q !== '' || $cat > 0): ?><a class="lnk sm" href="/admin/carte">Réinitialiser</a><?php endif; ?>
+  <button class="abtn line sm">Filtra</button>
+  <?php if ($q !== '' || $cat > 0): ?><a class="lnk sm" href="/admin/carte">Azzera</a><?php endif; ?>
 </form>
 
 <div class="split-edit">
   <section class="card panel-list">
     <header class="card-head">
-      <div><p class="eyebrow">Plats</p><h3>La carte actuelle</h3></div>
+      <div><p class="eyebrow">Piatti</p><h3>Il menù attuale</h3></div>
     </header>
     <?php if (!$dishes): ?>
       <div class="empty-state">
-        <p>Aucun plat ne correspond à cette recherche.</p>
-        <a class="abtn gold sm" href="/admin/carte?new=1#editeur">Créer un plat</a>
+        <p>Nessun piatto corrisponde a questa ricerca.</p>
+        <a class="abtn gold sm" href="/admin/carte?new=1#editeur">Crea un piatto</a>
       </div>
     <?php else: ?>
       <div class="table-wrap">
         <table class="tbl">
           <thead>
-            <tr><th>Plat</th><th>Catégorie</th><th class="ta-r">Prix</th><th class="ta-c">Dispo</th><th class="ta-c">Cœur</th><th></th></tr>
+            <tr><th>Piatto</th><th>Categoria</th><th class="ta-r">Prezzo</th><th class="ta-c">Disp.</th><th class="ta-c">Cuore</th><th></th></tr>
           </thead>
           <tbody>
           <?php foreach ($dishes as $d): ?>
@@ -70,7 +70,7 @@ $isChecked = fn(string $k, $fallback) => $hasOld ? isset($_SESSION['old'][$k]) :
                   <input type="hidden" name="csrf" value="<?=csrf()?>">
                   <input type="hidden" name="id" value="<?= (int)$d['id'] ?>">
                   <input type="hidden" name="field" value="available">
-                  <button class="switch<?= $d['available'] ? ' on' : '' ?>" aria-label="Basculer la disponibilité" title="Disponible / épuisé"><i></i></button>
+                  <button class="switch<?= $d['available'] ? ' on' : '' ?>" aria-label="Cambia la disponibilità" title="Disponibile / esaurito"><i></i></button>
                 </form>
               </td>
               <td class="ta-c">
@@ -78,15 +78,15 @@ $isChecked = fn(string $k, $fallback) => $hasOld ? isset($_SESSION['old'][$k]) :
                   <input type="hidden" name="csrf" value="<?=csrf()?>">
                   <input type="hidden" name="id" value="<?= (int)$d['id'] ?>">
                   <input type="hidden" name="field" value="featured">
-                  <button class="switch heart<?= $d['featured'] ? ' on' : '' ?>" aria-label="Mettre en avant" title="Mettre en avant"><i></i></button>
+                  <button class="switch heart<?= $d['featured'] ? ' on' : '' ?>" aria-label="Metti in evidenza" title="Metti in evidenza"><i></i></button>
                 </form>
               </td>
               <td class="ta-r row-acts">
-                <a class="icon-btn" href="/admin/carte?edit=<?= (int)$d['id'] ?>#editeur" title="Modifier">Modifier</a>
-                <form method="post" action="/admin/carte/supprimer" data-confirm="Supprimer « <?=e($d['name'])?> » de la carte ?">
+                <a class="icon-btn" href="/admin/carte?edit=<?= (int)$d['id'] ?>#editeur" title="Modifica">Modifica</a>
+                <form method="post" action="/admin/carte/supprimer" data-confirm="Eliminare « <?=e($d['name'])?> » dal menù?">
                   <input type="hidden" name="csrf" value="<?=csrf()?>">
                   <input type="hidden" name="id" value="<?= (int)$d['id'] ?>">
-                  <button class="icon-btn danger" title="Supprimer">Suppr.</button>
+                  <button class="icon-btn danger" title="Elimina">Elimina</button>
                 </form>
               </td>
             </tr>
@@ -101,17 +101,17 @@ $isChecked = fn(string $k, $fallback) => $hasOld ? isset($_SESSION['old'][$k]) :
     <?php if (!$isEditor): ?>
       <div class="editor-empty">
         <span class="ornament">✦</span>
-        <h3>Modifier un plat</h3>
-        <p class="muted">Sélectionnez un plat dans la liste pour en changer le prix, la composition ou la photo.</p>
-        <a class="abtn line sm" href="/admin/carte?new=1#editeur">Ou créer un nouveau plat</a>
+        <h3>Modificare un piatto</h3>
+        <p class="muted">Scegliete un piatto dall’elenco per cambiarne il prezzo, la composizione o la foto.</p>
+        <a class="abtn line sm" href="/admin/carte?new=1#editeur">Oppure create un nuovo piatto</a>
       </div>
     <?php else: ?>
       <header class="card-head">
         <div>
-          <p class="eyebrow"><?= $editing ? 'Édition' : 'Nouveau plat' ?></p>
-          <h3><?= $editing ? e($dish['name']) : 'Une nouvelle création' ?></h3>
+          <p class="eyebrow"><?= $editing ? 'Modifica' : 'Nuovo piatto' ?></p>
+          <h3><?= $editing ? e($dish['name']) : 'Una nuova creazione' ?></h3>
         </div>
-        <a class="lnk sm" href="/admin/carte">Fermer</a>
+        <a class="lnk sm" href="/admin/carte">Chiudi</a>
       </header>
       <form method="post" action="/admin/carte/enregistrer" enctype="multipart/form-data" class="form">
         <input type="hidden" name="csrf" value="<?=csrf()?>">
@@ -120,13 +120,13 @@ $isChecked = fn(string $k, $fallback) => $hasOld ? isset($_SESSION['old'][$k]) :
         <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
 
         <label class="field">
-          <span>Nom du plat</span>
-          <input name="name" required maxlength="120" value="<?=e($v('name'))?>" placeholder="Couscous agneau">
+          <span>Nome del piatto</span>
+          <input name="name" required maxlength="120" value="<?=e($v('name'))?>" placeholder="Couscous all’agnello">
         </label>
 
         <div class="field-row">
           <label class="field">
-            <span>Catégorie</span>
+            <span>Categoria</span>
             <select name="category_id" required>
               <?php foreach ($categories as $c): ?>
                 <option value="<?= (int)$c['id'] ?>"<?= (int)$v('category_id', '0') === (int)$c['id'] ? ' selected' : ''?>><?=e($c['name'])?></option>
@@ -134,44 +134,44 @@ $isChecked = fn(string $k, $fallback) => $hasOld ? isset($_SESSION['old'][$k]) :
             </select>
           </label>
           <label class="field">
-            <span>Prix (€)</span>
+            <span>Prezzo (€)</span>
             <input name="price" required inputmode="decimal" value="<?=e($v('price'))?>" placeholder="9,00">
           </label>
         </div>
 
         <label class="field">
-          <span>Description courte</span>
-          <input name="description" maxlength="255" value="<?=e($v('description'))?>" placeholder="Semoule, légumes, agneau">
+          <span>Descrizione breve</span>
+          <input name="description" maxlength="255" value="<?=e($v('description'))?>" placeholder="Semolino, verdure, agnello">
         </label>
 
         <label class="field">
-          <span>Composition / ingrédients</span>
-          <textarea name="ingredients" rows="3" maxlength="255" placeholder="Semoule roulée à la main, agneau mijoté, pois chiches, carottes, harissa maison"><?=e($v('ingredients'))?></textarea>
+          <span>Composizione / ingredienti</span>
+          <textarea name="ingredients" rows="3" maxlength="255" placeholder="Semolino arrotolato a mano, agnello stufato, ceci, carote, harissa della casa"><?=e($v('ingredients'))?></textarea>
         </label>
 
         <label class="field">
-          <span>Allergènes <i>facultatif</i></span>
-          <input name="allergens" maxlength="255" value="<?=e($v('allergens'))?>" placeholder="gluten, œufs">
+          <span>Allergeni <i>facoltativo</i></span>
+          <input name="allergens" maxlength="255" value="<?=e($v('allergens'))?>" placeholder="glutine, uova">
         </label>
 
         <div class="field">
-          <span>Photo du plat</span>
+          <span>Foto del piatto</span>
           <?php if (!empty($dish['image'])): ?>
             <div class="current-img">
               <img src="<?=e($dish['image'])?>" alt="">
-              <label class="check"><input type="checkbox" name="remove_image" value="1"><span>Retirer la photo</span></label>
+              <label class="check"><input type="checkbox" name="remove_image" value="1"><span>Rimuovi la foto</span></label>
             </div>
           <?php endif; ?>
           <input type="file" name="image" accept="image/jpeg,image/png,image/webp">
-          <i class="hint">JPG, PNG ou WEBP · 5 Mo maximum</i>
+          <i class="hint">JPG, PNG o WEBP · 5 MB al massimo</i>
         </div>
 
         <div class="switch-row">
-          <label class="check"><input type="checkbox" name="available" value="1"<?= $isChecked('available', $dish['available']) ? ' checked' : ''?>><span>Disponible à la carte</span></label>
-          <label class="check"><input type="checkbox" name="featured" value="1"<?= $isChecked('featured', $dish['featured']) ? ' checked' : ''?>><span>Mise en avant (carrousel)</span></label>
+          <label class="check"><input type="checkbox" name="available" value="1"<?= $isChecked('available', $dish['available']) ? ' checked' : ''?>><span>Disponibile nel menù</span></label>
+          <label class="check"><input type="checkbox" name="featured" value="1"<?= $isChecked('featured', $dish['featured']) ? ' checked' : ''?>><span>In evidenza (carosello)</span></label>
         </div>
 
-        <button class="abtn gold full"><?= $editing ? 'Enregistrer les modifications' : 'Ajouter à la carte' ?> <?=$arrow?></button>
+        <button class="abtn gold full"><?= $editing ? 'Salva le modifiche' : 'Aggiungi al menù' ?> <?=$arrow?></button>
       </form>
     <?php endif; ?>
   </section>

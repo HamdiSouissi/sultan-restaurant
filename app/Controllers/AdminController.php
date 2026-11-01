@@ -31,7 +31,7 @@ final class AdminController {
 
     if ($admins === 0) {
       if ($path === '/admin/install') {
-        $post ? $this->install() : $this->view('admin/install', [], 'Première installation', 'guest');
+        $post ? $this->install() : $this->view('admin/install', [], 'Prima installazione', 'guest');
         return;
       }
       redirect('/admin/install');
@@ -40,7 +40,7 @@ final class AdminController {
 
     if ($path === '/admin/login') {
       if ($this->current()) redirect('/admin');
-      $post ? $this->login() : $this->view('admin/login', [], 'Connexion', 'guest');
+      $post ? $this->login() : $this->view('admin/login', [], 'Accesso', 'guest');
       return;
     }
     if ($path === '/admin/logout') { $this->logout(); return; }
@@ -83,7 +83,7 @@ final class AdminController {
     }
 
     http_response_code(404);
-    $this->view('admin/introuvable', [], 'Page introuvable');
+    $this->view('admin/introuvable', [], 'Pagina non trovata');
   }
 
   /* ================================================================
@@ -98,16 +98,16 @@ final class AdminController {
   }
 
   private function login(): void {
-    if (!csrf_ok()) { flash('err', 'Session expirée, merci de réessayer.'); redirect('/admin/login'); }
+    if (!csrf_ok()) { flash('err', 'Sessione scaduta, riprovate.'); redirect('/admin/login'); }
     $email = mb_strtolower(mb_substr(trim((string)($_POST['email'] ?? '')), 0, 150));
     $pass  = (string)($_POST['password'] ?? '');
 
     if (!filter_var($email, FILTER_VALIDATE_EMAIL) || $pass === '') {
-      flash('err', 'Renseignez votre adresse e-mail et votre mot de passe.');
+      flash('err', 'Inserite la vostra e-mail e la password.');
       redirect('/admin/login');
     }
     if ($this->tooManyAttempts($email)) {
-      flash('err', 'Trop de tentatives. Patientez quinze minutes avant de réessayer.');
+      flash('err', 'Troppi tentativi. Attendete quindici minuti prima di riprovare.');
       redirect('/admin/login');
     }
 
@@ -115,7 +115,7 @@ final class AdminController {
     if (!$admin || !password_verify($pass, (string)$admin['password_hash'])) {
       $this->logAttempt($email);
       usleep(250000);
-      flash('err', 'E-mail ou mot de passe incorrect.');
+      flash('err', 'E-mail o password non corretti.');
       redirect('/admin/login');
     }
 
@@ -126,7 +126,7 @@ final class AdminController {
     session_regenerate_id(true);
     $_SESSION['admin_id'] = (int)$admin['id'];
     $_SESSION['csrf'] = bin2hex(random_bytes(32));
-    flash('ok', 'Bienvenue dans votre espace de gestion.');
+    flash('ok', 'Benvenuti nel vostro spazio di gestione.');
     redirect('/admin');
   }
 
@@ -136,12 +136,12 @@ final class AdminController {
     }
     unset($_SESSION['admin_id']);
     session_regenerate_id(true);
-    flash('ok', 'Vous êtes déconnecté.');
+    flash('ok', 'Sessione chiusa.');
     redirect('/admin/login');
   }
 
   private function install(): void {
-    if (!csrf_ok()) { flash('err', 'Session expirée, merci de réessayer.'); redirect('/admin/install'); }
+    if (!csrf_ok()) { flash('err', 'Sessione scaduta, riprovate.'); redirect('/admin/install'); }
     if ((int)(Database::all('SELECT COUNT(*) AS c FROM admins')[0]['c'] ?? 0) > 0) redirect('/admin/login');
 
     $email = mb_strtolower(mb_substr(trim((string)($_POST['email'] ?? '')), 0, 150));
@@ -150,17 +150,17 @@ final class AdminController {
 
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
       keep_old(['email' => $email]);
-      flash('err', 'Adresse e-mail invalide.');
+      flash('err', 'Indirizzo e-mail non valido.');
       redirect('/admin/install');
     }
     if (strlen($p1) < 10) {
       keep_old(['email' => $email]);
-      flash('err', 'Choisissez un mot de passe de 10 caractères minimum.');
+      flash('err', 'Scegliete una password di almeno 10 caratteri.');
       redirect('/admin/install');
     }
     if (!hash_equals($p1, $p2)) {
       keep_old(['email' => $email]);
-      flash('err', 'Les deux mots de passe ne correspondent pas.');
+      flash('err', 'Le due password non coincidono.');
       redirect('/admin/install');
     }
 
@@ -169,7 +169,7 @@ final class AdminController {
         [$email, password_hash($p1, PASSWORD_DEFAULT)]);
       $id = (int)(Database::all('SELECT id FROM admins WHERE email = ? LIMIT 1', [$email])[0]['id'] ?? 0);
     } catch (Throwable $ex) {
-      flash('err', 'Création impossible : '.$ex->getMessage());
+      flash('err', 'Creazione non riuscita: '.$ex->getMessage());
       redirect('/admin/install');
     }
 
@@ -177,7 +177,7 @@ final class AdminController {
     session_regenerate_id(true);
     $_SESSION['admin_id'] = $id;
     $_SESSION['csrf'] = bin2hex(random_bytes(32));
-    flash('ok', 'Compte administrateur créé. Bienvenue au Sultan.');
+    flash('ok', 'Account amministratore creato. Benvenuti al Sultan.');
     redirect('/admin');
   }
 
@@ -238,7 +238,7 @@ final class AdminController {
       ? (Database::all('SELECT * FROM daily_special WHERE id = 1')[0] ?? null)
       : null;
 
-    $this->view('admin/dashboard', compact('stats', 'visits', 'maxVisits', 'reservations', 'messages', 'categories', 'daily', 'today'), 'Tableau de bord');
+    $this->view('admin/dashboard', compact('stats', 'visits', 'maxVisits', 'reservations', 'messages', 'categories', 'daily', 'today'), 'Pannello di controllo');
   }
 
   /* ================================================================
@@ -269,12 +269,12 @@ final class AdminController {
     $editing = null;
     if ($edit > 0) {
       $editing = Database::all('SELECT * FROM dishes WHERE id = ? LIMIT 1', [$edit])[0] ?? null;
-      if (!$editing) { flash('err', 'Ce plat n’existe plus.'); redirect('/admin/carte'); }
+      if (!$editing) { flash('err', 'Questo piatto non esiste più.'); redirect('/admin/carte'); }
     } elseif (!$new) {
       $editing = null;
     }
 
-    $this->view('admin/carte', compact('dishes', 'categories', 'editing', 'q', 'cat', 'new'), 'La carte');
+    $this->view('admin/carte', compact('dishes', 'categories', 'editing', 'q', 'cat', 'new'), 'Il menù');
   }
 
   private function saveDish(): void {
@@ -286,10 +286,10 @@ final class AdminController {
     $categoryId = (int)($_POST['category_id'] ?? 0);
     $price = $this->price('price');
     $errors = [];
-    if (mb_strlen($name) < 2) $errors[] = 'Indiquez le nom du plat.';
-    if ($price === null) $errors[] = 'Le prix doit être un montant supérieur à 0.';
+    if (mb_strlen($name) < 2) $errors[] = 'Indicate il nome del piatto.';
+    if ($price === null) $errors[] = 'Il prezzo deve essere un importo maggiore di 0.';
     if ($categoryId <= 0 || !Database::all('SELECT id FROM categories WHERE id = ?', [$categoryId])) {
-      $errors[] = 'Choisissez une catégorie existante.';
+      $errors[] = 'Scegliete una categoria esistente.';
     }
     if ($errors) { keep_old($_POST); flash('err', implode(' ', $errors)); redirect($back); }
     if (!empty($_POST['website'])) redirect($back);
@@ -310,7 +310,7 @@ final class AdminController {
     try {
       if ($id > 0) {
         $old = Database::all('SELECT image FROM dishes WHERE id = ?', [$id])[0] ?? null;
-        if (!$old) { flash('err', 'Ce plat n’existe plus.'); redirect('/admin/carte'); }
+        if (!$old) { flash('err', 'Questo piatto non esiste più.'); redirect('/admin/carte'); }
         Database::run(
           'UPDATE dishes SET category_id=?, name=?, description=?, ingredients=?, allergens=?, price=?, image=?, featured=?, available=? WHERE id=?',
           array_merge($values, [$id])
@@ -324,12 +324,12 @@ final class AdminController {
       }
     } catch (Throwable $ex) {
       keep_old($_POST);
-      flash('err', 'Enregistrement impossible : '.$ex->getMessage());
+      flash('err', 'Salvataggio non riuscito: '.$ex->getMessage());
       redirect($back);
     }
 
     forget_old();
-    flash('ok', $id > 0 ? '« '.$name.' » a été mis à jour.' : '« '.$name.' » a été ajouté à la carte.');
+    flash('ok', $id > 0 ? '« '.$name.' » è stato aggiornato.' : '« '.$name.' » è stato aggiunto al menù.');
     redirect('/admin/carte');
   }
 
@@ -337,10 +337,10 @@ final class AdminController {
     $this->guardPost();
     $id = (int)($_POST['id'] ?? 0);
     $row = Database::all('SELECT name, image FROM dishes WHERE id = ?', [$id])[0] ?? null;
-    if (!$row) { flash('err', 'Plat introuvable.'); redirect('/admin/carte'); }
+    if (!$row) { flash('err', 'Piatto non trovato.'); redirect('/admin/carte'); }
     Database::run('DELETE FROM dishes WHERE id = ?', [$id]);
     remove_upload($row['image']);
-    flash('ok', '« '.$row['name'].' » a été supprimé de la carte.');
+    flash('ok', '« '.$row['name'].' » è stato rimosso dal menù.');
     redirect('/admin/carte');
   }
 
@@ -349,11 +349,11 @@ final class AdminController {
     $id = (int)($_POST['id'] ?? 0);
     $field = (string)($_POST['field'] ?? '');
     if (!in_array($field, ['available', 'featured'], true)) {
-      flash('err', 'Action inconnue.');
+      flash('err', 'Azione sconosciuta.');
       redirect('/admin/carte');
     }
     Database::run('UPDATE dishes SET '.$field.' = 1 - '.$field.' WHERE id = ?', [$id]);
-    flash('ok', $field === 'available' ? 'Disponibilité mise à jour.' : 'Mise en avant mise à jour.');
+    flash('ok', $field === 'available' ? 'Disponibilità aggiornata.' : 'Evidenza aggiornata.');
     redirect('/admin/carte');
   }
 
@@ -369,10 +369,10 @@ final class AdminController {
     $editing = $editId > 0 ? (Database::all(
       'SELECT c.*, (SELECT COUNT(*) FROM dishes d WHERE d.category_id = c.id) AS n
        FROM categories c WHERE c.id = ?', [$editId])[0] ?? null) : null;
-    if ($editId > 0 && !$editing) { flash('err', 'Cette catégorie n’existe plus.'); redirect('/admin/categories'); }
+    if ($editId > 0 && !$editing) { flash('err', 'Questa categoria non esiste più.'); redirect('/admin/categories'); }
     $maxSort = 0;
     foreach ($categories as $c) $maxSort = max($maxSort, (int)$c['sort']);
-    $this->view('admin/categories', compact('categories', 'editing', 'isNew', 'maxSort'), 'Catégories');
+    $this->view('admin/categories', compact('categories', 'editing', 'isNew', 'maxSort'), 'Categorie');
   }
 
   private function saveCategory(): void {
@@ -382,7 +382,7 @@ final class AdminController {
     $name = $this->in('name', 80);
     if (mb_strlen($name) < 2) {
       keep_old($_POST);
-      flash('err', 'Le nom de la catégorie doit contenir au moins 2 caractères.');
+      flash('err', 'Il nome della categoria deve avere almeno 2 caratteri.');
       redirect($back);
     }
 
@@ -401,10 +401,10 @@ final class AdminController {
 
     if ($id > 0) {
       Database::run('UPDATE categories SET name = ?, slug = ?, sort = ? WHERE id = ?', [$name, $slug, $sort, $id]);
-      flash('ok', 'Catégorie mise à jour.');
+      flash('ok', 'Categoria aggiornata.');
     } else {
       Database::run('INSERT INTO categories(name, slug, sort) VALUES(?,?,?)', [$name, $slug, $sort]);
-      flash('ok', 'Catégorie « '.$name.' » créée.');
+      flash('ok', 'Categoria « '.$name.' » creata.');
     }
     forget_old();
     redirect('/admin/categories');
@@ -414,11 +414,11 @@ final class AdminController {
     $this->guardPost();
     $id = (int)($_POST['id'] ?? 0);
     $row = Database::all('SELECT name FROM categories WHERE id = ?', [$id])[0] ?? null;
-    if (!$row) { flash('err', 'Catégorie introuvable.'); redirect('/admin/categories'); }
+    if (!$row) { flash('err', 'Categoria non trovata.'); redirect('/admin/categories'); }
 
     $count = $this->scalar('SELECT COUNT(*) FROM dishes WHERE category_id = ?', [$id]);
     if ($count > 0 && empty($_POST['force'])) {
-      flash('err', '« '.$row['name'].' » contient '.$count.' plat(s). Confirmez la suppression en cochant la case prévue à cet effet.');
+      flash('err', '« '.$row['name'].' » contiene '.$count.' piatto/i. Confermate l’eliminazione spuntando la casella prevista.');
       redirect('/admin/categories?edit='.$id);
     }
     if ($count > 0) {
@@ -428,7 +428,7 @@ final class AdminController {
       Database::run('DELETE FROM dishes WHERE category_id = ?', [$id]);
     }
     Database::run('DELETE FROM categories WHERE id = ?', [$id]);
-    flash('ok', 'Catégorie « '.$row['name'].' » supprimée.');
+    flash('ok', 'Categoria « '.$row['name'].' » eliminata.');
     redirect('/admin/categories');
   }
 
@@ -438,7 +438,7 @@ final class AdminController {
     $dir = ($_POST['dir'] ?? 'up') === 'down' ? 'down' : 'up';
     $ids = array_map('intval', array_column(Database::all('SELECT id FROM categories ORDER BY sort, id'), 'id'));
     $pos = array_search($id, $ids, true);
-    if ($pos === false) { flash('err', 'Catégorie introuvable.'); redirect('/admin/categories'); }
+    if ($pos === false) { flash('err', 'Categoria non trovata.'); redirect('/admin/categories'); }
     $swap = $dir === 'up' ? $pos - 1 : $pos + 1;
     if ($swap >= 0 && $swap < count($ids)) {
       $tmp = $ids[$pos];
@@ -447,7 +447,7 @@ final class AdminController {
       foreach ($ids as $index => $catId) {
         Database::run('UPDATE categories SET sort = ? WHERE id = ?', [$index + 1, $catId]);
       }
-      flash('ok', 'Ordre des catégories mis à jour.');
+      flash('ok', 'Ordine delle categorie aggiornato.');
     }
     redirect('/admin/categories');
   }
@@ -458,22 +458,22 @@ final class AdminController {
   private function daily(): void {
     $supported = $this->hasTable('daily_special');
     $row = $supported ? (Database::all('SELECT * FROM daily_special WHERE id = 1')[0] ?? null) : null;
-    $this->view('admin/daily', compact('row', 'supported'), 'Plat du jour');
+    $this->view('admin/daily', compact('row', 'supported'), 'Piatto del giorno');
   }
 
   private function saveDaily(): void {
     $this->guardPost();
     if (!$this->hasTable('daily_special')) {
-      flash('err', 'Importez sql/migration_admin.sql pour activer le plat du jour.');
+      flash('err', 'Importate sql/migration_admin.sql per attivare il piatto del giorno.');
       redirect('/admin/plat-du-jour');
     }
     $name = $this->in('name', 120);
     $price = $this->price('price');
     $ingredients = $this->in('ingredients', 400);
     $errors = [];
-    if (mb_strlen($name) < 2) $errors[] = 'Indiquez le nom du plat du jour.';
-    if ($price === null) $errors[] = 'Indiquez un prix valide.';
-    if ($ingredients === '') $errors[] = 'Décrivez la composition du plat.';
+    if (mb_strlen($name) < 2) $errors[] = 'Indicate il nome del piatto del giorno.';
+    if ($price === null) $errors[] = 'Indicate un prezzo valido.';
+    if ($ingredients === '') $errors[] = 'Descrivete la composizione del piatto.';
     if ($errors) { keep_old($_POST); flash('err', implode(' ', $errors)); redirect('/admin/plat-du-jour'); }
 
     $served = (string)($_POST['served_on'] ?? '');
@@ -494,13 +494,13 @@ final class AdminController {
       );
     } catch (Throwable $ex) {
       keep_old($_POST);
-      flash('err', 'Enregistrement impossible : '.$ex->getMessage());
+      flash('err', 'Salvataggio non riuscito: '.$ex->getMessage());
       redirect('/admin/plat-du-jour');
     }
     if ($upload && !empty($current['image']) && $current['image'] !== $image) remove_upload($current['image']);
 
     forget_old();
-    flash('ok', isset($_POST['active']) ? 'Le plat du jour est en ligne.' : 'Le plat du jour a été enregistré (hors ligne).');
+    flash('ok', isset($_POST['active']) ? 'Il piatto del giorno è online.' : 'Il piatto del giorno è stato salvato (offline).');
     redirect('/admin/plat-du-jour');
   }
 
@@ -509,7 +509,7 @@ final class AdminController {
     if ($this->hasTable('daily_special')) {
       Database::run('UPDATE daily_special SET active = 0 WHERE id = 1');
     }
-    flash('ok', 'Le plat du jour n’est plus affiché sur le site.');
+    flash('ok', 'Il piatto del giorno non è più visibile sul sito.');
     redirect('/admin/plat-du-jour');
   }
 
@@ -520,7 +520,7 @@ final class AdminController {
     $s = $this->settings();
     $hours = Database::all('SELECT * FROM hours ORDER BY day');
     $socials = Database::all('SELECT * FROM socials ORDER BY id');
-    $this->view('admin/infos', compact('s', 'hours', 'socials'), 'Informations');
+    $this->view('admin/infos', compact('s', 'hours', 'socials'), 'Informazioni');
   }
 
   private function saveSettings(): void {
@@ -530,17 +530,17 @@ final class AdminController {
       $value[$key] = trim((string)($_POST[$key] ?? ''));
     }
     $errors = [];
-    if (mb_strlen($value['name']) < 2) $errors[] = 'Le nom de la maison est requis.';
-    if ($value['email'] !== '' && !filter_var($value['email'], FILTER_VALIDATE_EMAIL)) $errors[] = 'Adresse e-mail invalide.';
+    if (mb_strlen($value['name']) < 2) $errors[] = 'Il nome della casa è obbligatorio.';
+    if ($value['email'] !== '' && !filter_var($value['email'], FILTER_VALIDATE_EMAIL)) $errors[] = 'Indirizzo e-mail non valido.';
     if ($value['whatsapp'] !== '') {
       $value['whatsapp'] = preg_replace('/[^0-9]/', '', $value['whatsapp']) ?? '';
-      if (strlen($value['whatsapp']) < 6) $errors[] = 'Numéro WhatsApp invalide (chiffres uniquement).';
+      if (strlen($value['whatsapp']) < 6) $errors[] = 'Numero WhatsApp non valido (solo cifre).';
     }
     if ($value['maps_embed'] !== '' && !preg_match('#^https://[^\s"\'<>]+$#i', $value['maps_embed'])) {
-      $errors[] = 'Le lien de la carte doit commencer par https://';
+      $errors[] = 'Il link della mappa deve iniziare con https://';
     }
-    if ($value['lat'] !== '' && !is_numeric($value['lat'])) $errors[] = 'Latitude invalide.';
-    if ($value['lng'] !== '' && !is_numeric($value['lng'])) $errors[] = 'Longitude invalide.';
+    if ($value['lat'] !== '' && !is_numeric($value['lat'])) $errors[] = 'Latitudine non valida.';
+    if ($value['lng'] !== '' && !is_numeric($value['lng'])) $errors[] = 'Longitudine non valida.';
     if ($errors) { keep_old($_POST); flash('err', implode(' ', $errors)); redirect('/admin/infos'); }
 
     try {
@@ -549,18 +549,18 @@ final class AdminController {
       }
     } catch (Throwable $ex) {
       keep_old($_POST);
-      flash('err', 'Enregistrement impossible : '.$ex->getMessage());
+      flash('err', 'Salvataggio non riuscito: '.$ex->getMessage());
       redirect('/admin/infos');
     }
     forget_old();
-    flash('ok', 'Les informations de la maison ont été enregistrées.');
+    flash('ok', 'Le informazioni della casa sono state salvate.');
     redirect('/admin/infos');
   }
 
   private function saveHours(): void {
     $this->guardPost();
     $rows = $_POST['hours'] ?? null;
-    if (!is_array($rows)) { flash('err', 'Formulaire invalide.'); redirect('/admin/infos#horaires'); }
+    if (!is_array($rows)) { flash('err', 'Modulo non valido.'); redirect('/admin/infos#horaires'); }
     foreach ($rows as $day => $row) {
       $day = (int)$day;
       if ($day < 1 || $day > 7 || !is_array($row)) continue;
@@ -574,7 +574,7 @@ final class AdminController {
          empty($row['closed']) ? 0 : 1]
       );
     }
-    flash('ok', 'Les horaires ont été mis à jour.');
+    flash('ok', 'Gli orari sono stati aggiornati.');
     redirect('/admin/infos#horaires');
   }
 
@@ -584,7 +584,7 @@ final class AdminController {
     $network = strtolower(preg_replace('/[^A-Za-z0-9_]/', '', $this->in('network', 30)) ?: 'autre');
     $url = trim((string)($_POST['url'] ?? ''));
     if (!preg_match('#^https://[^\s"<>]+$#i', $url)) {
-      flash('err', 'Indiquez une adresse complète, en https://');
+      flash('err', 'Indicate un indirizzo completo, in https://');
       redirect('/admin/infos#reseaux');
     }
     if ($id > 0) {
@@ -592,14 +592,14 @@ final class AdminController {
     } else {
       Database::run('INSERT INTO socials(network, url) VALUES(?,?)', [$network, $url]);
     }
-    flash('ok', 'Réseau social enregistré.');
+    flash('ok', 'Social network salvato.');
     redirect('/admin/infos#reseaux');
   }
 
   private function deleteSocial(): void {
     $this->guardPost();
     Database::run('DELETE FROM socials WHERE id = ?', [(int)($_POST['id'] ?? 0)]);
-    flash('ok', 'Réseau social supprimé.');
+    flash('ok', 'Social network eliminato.');
     redirect('/admin/infos#reseaux');
   }
 
@@ -608,7 +608,7 @@ final class AdminController {
    * ================================================================ */
   private function gallery(): void {
     $items = Database::all('SELECT * FROM gallery ORDER BY sort, id');
-    $this->view('admin/galerie', compact('items'), 'Galerie');
+    $this->view('admin/galerie', compact('items'), 'Galleria');
   }
 
   private function saveGallery(): void {
@@ -616,13 +616,13 @@ final class AdminController {
     $id = (int)($_POST['id'] ?? 0);
     $alt = $this->in('alt', 160);
     $current = $id > 0 ? (Database::all('SELECT * FROM gallery WHERE id = ?', [$id])[0] ?? null) : null;
-    if ($id > 0 && !$current) { flash('err', 'Image introuvable.'); redirect('/admin/galerie'); }
+    if ($id > 0 && !$current) { flash('err', 'Immagine non trovata.'); redirect('/admin/galerie'); }
 
     try { $upload = upload_image('image'); }
     catch (RuntimeException $ex) { flash('err', $ex->getMessage()); redirect('/admin/galerie'); }
 
     $path = $upload ?: (clean_path($_POST['path'] ?? null) ?? ($current['path'] ?? null));
-    if (!$path) { flash('err', 'Téléversez une image ou indiquez son chemin (/assets/img/…).'); redirect('/admin/galerie'); }
+    if (!$path) { flash('err', 'Caricate un’immagine o indicate il suo percorso (/assets/img/…).'); redirect('/admin/galerie'); }
 
     $sort = (int)($_POST['sort'] ?? 0);
     if ($sort <= 0) {
@@ -632,10 +632,10 @@ final class AdminController {
     if ($current) {
       Database::run('UPDATE gallery SET path = ?, alt = ?, sort = ? WHERE id = ?', [$path, $alt, $sort, $current['id']]);
       if ($current['path'] !== $path) remove_upload($current['path']);
-      flash('ok', 'Image mise à jour.');
+      flash('ok', 'Immagine aggiornata.');
     } else {
       Database::run('INSERT INTO gallery(path, alt, sort) VALUES(?,?,?)', [$path, $alt, $sort]);
-      flash('ok', 'Image ajoutée à la galerie.');
+      flash('ok', 'Immagine aggiunta alla galleria.');
     }
     redirect('/admin/galerie');
   }
@@ -647,7 +647,7 @@ final class AdminController {
     if ($row) {
       Database::run('DELETE FROM gallery WHERE id = ?', [$id]);
       remove_upload($row['path']);
-      flash('ok', 'Image retirée de la galerie.');
+      flash('ok', 'Immagine rimossa dalla galleria.');
     }
     redirect('/admin/galerie');
   }
@@ -683,7 +683,7 @@ final class AdminController {
       $newsletter = Database::all('SELECT * FROM newsletter ORDER BY id DESC LIMIT 500');
     }
 
-    $this->view('admin/demandes', compact('type', 'status', 'counts', 'reservations', 'messages', 'newsletter'), 'Demandes');
+    $this->view('admin/demandes', compact('type', 'status', 'counts', 'reservations', 'messages', 'newsletter'), 'Richieste');
   }
 
   private function reservationStatus(): void {
@@ -691,11 +691,11 @@ final class AdminController {
     $id = (int)($_POST['id'] ?? 0);
     $status = (string)($_POST['status'] ?? '');
     if (!in_array($status, ['new', 'confirmed', 'cancelled'], true)) {
-      flash('err', 'Statut inconnu.');
+      flash('err', 'Stato sconosciuto.');
       redirect('/admin/demandes');
     }
     Database::run('UPDATE reservations SET status = ? WHERE id = ?', [$status, $id]);
-    flash('ok', 'Réservation mise à jour.');
+    flash('ok', 'Prenotazione aggiornata.');
     redirect('/admin/demandes?type=reservations');
   }
 
@@ -704,9 +704,9 @@ final class AdminController {
     $map = ['reservation' => 'reservations', 'message' => 'contacts', 'newsletter' => 'newsletter'];
     $type = (string)($_POST['type'] ?? '');
     $id = (int)($_POST['id'] ?? 0);
-    if (!isset($map[$type])) { flash('err', 'Action inconnue.'); redirect('/admin/demandes'); }
+    if (!isset($map[$type])) { flash('err', 'Azione sconosciuta.'); redirect('/admin/demandes'); }
     Database::run('DELETE FROM '.$map[$type].' WHERE id = ?', [$id]);
-    flash('ok', 'Élément supprimé.');
+    flash('ok', 'Elemento eliminato.');
     $back = $type === 'reservation' ? 'reservations' : ($type === 'message' ? 'messages' : 'newsletter');
     redirect('/admin/demandes?type='.$back);
   }
@@ -732,7 +732,7 @@ final class AdminController {
     $editId = (int)($_GET['edit'] ?? 0);
     $editing = $editId > 0 ? (Database::all('SELECT * FROM reviews WHERE id = ?', [$editId])[0] ?? null) : null;
     $isNew = isset($_GET['new']);
-    $this->view('admin/avis', compact('items', 'editing', 'isNew'), 'Avis clients');
+    $this->view('admin/avis', compact('items', 'editing', 'isNew'), 'Recensioni');
   }
 
   private function saveReview(): void {
@@ -745,17 +745,17 @@ final class AdminController {
     $approved = isset($_POST['approved']) ? 1 : 0;
     if (mb_strlen($author) < 2 || mb_strlen($body) < 5) {
       keep_old($_POST);
-      flash('err', 'L’auteur et le texte de l’avis sont nécessaires.');
+      flash('err', 'L’autore e il testo della recensione sono necessari.');
       redirect('/admin/avis'.($id > 0 ? '?edit='.$id : '?new=1'));
     }
     if ($id > 0) {
       Database::run('UPDATE reviews SET author=?, rating=?, body=?, source=?, approved=? WHERE id=?',
         [$author, $rating, $body, $source, $approved, $id]);
-      flash('ok', 'Avis mis à jour.');
+      flash('ok', 'Recensione aggiornata.');
     } else {
       Database::run('INSERT INTO reviews(author, rating, body, source, approved) VALUES(?,?,?,?,?)',
         [$author, $rating, $body, $source, $approved]);
-      flash('ok', 'Avis ajouté.');
+      flash('ok', 'Recensione aggiunta.');
     }
     forget_old();
     redirect('/admin/avis');
@@ -764,7 +764,7 @@ final class AdminController {
   private function deleteReview(): void {
     $this->guardPost();
     Database::run('DELETE FROM reviews WHERE id = ?', [(int)($_POST['id'] ?? 0)]);
-    flash('ok', 'Avis supprimé.');
+    flash('ok', 'Recensione eliminata.');
     redirect('/admin/avis');
   }
 
@@ -772,7 +772,7 @@ final class AdminController {
    *  Compte administrateur
    * ================================================================ */
   private function account(): void {
-    $this->view('admin/compte', [], 'Mon compte');
+    $this->view('admin/compte', [], 'Il mio account');
   }
 
   private function saveAccount(): void {
@@ -784,16 +784,16 @@ final class AdminController {
     if ($action === 'email') {
       $email = mb_strtolower($this->in('email', 150));
       if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        flash('err', 'Adresse e-mail invalide.');
+        flash('err', 'Indirizzo e-mail non valido.');
         redirect('/admin/compte');
       }
       try {
         Database::run('UPDATE admins SET email = ? WHERE id = ?', [$email, $admin['id']]);
       } catch (Throwable $ex) {
-        flash('err', 'Cette adresse est déjà utilisée par un autre compte.');
+        flash('err', 'Questo indirizzo è già usato da un altro account.');
         redirect('/admin/compte');
       }
-      flash('ok', 'Adresse e-mail mise à jour.');
+      flash('ok', 'Indirizzo e-mail aggiornato.');
       redirect('/admin/compte');
     }
 
@@ -802,21 +802,21 @@ final class AdminController {
       $p1 = (string)($_POST['password'] ?? '');
       $p2 = (string)($_POST['password2'] ?? '');
       if (!password_verify($current, (string)$admin['password_hash'])) {
-        flash('err', 'Le mot de passe actuel est incorrect.');
+        flash('err', 'La password attuale non è corretta.');
         redirect('/admin/compte');
       }
       if (strlen($p1) < 10) {
-        flash('err', 'Le nouveau mot de passe doit contenir au moins 10 caractères.');
+        flash('err', 'La nuova password deve avere almeno 10 caratteri.');
         redirect('/admin/compte');
       }
       if (!hash_equals($p1, $p2)) {
-        flash('err', 'Les deux nouveaux mots de passe ne correspondent pas.');
+        flash('err', 'Le due nuove password non coincidono.');
         redirect('/admin/compte');
       }
       Database::run('UPDATE admins SET password_hash = ? WHERE id = ?',
         [password_hash($p1, PASSWORD_DEFAULT), $admin['id']]);
       session_regenerate_id(true);
-      flash('ok', 'Mot de passe modifié.');
+      flash('ok', 'Password modificata.');
       redirect('/admin/compte');
     }
 
@@ -843,13 +843,13 @@ final class AdminController {
 
   private function dbIssue(Throwable $ex): void {
     http_response_code(500);
-    $this->view('admin/db', ['message' => $ex->getMessage()], 'Base de données', 'guest');
+    $this->view('admin/db', ['message' => $ex->getMessage()], 'Database', 'guest');
   }
 
   private function guardPost(): void {
     if (strtoupper((string)($_SERVER['REQUEST_METHOD'] ?? 'GET')) !== 'POST') redirect('/admin');
     if (!csrf_ok()) {
-      flash('err', 'Session expirée, merci de réessayer.');
+      flash('err', 'Sessione scaduta, riprovate.');
       redirect('/admin');
     }
     if (!empty($_POST['website'])) redirect('/admin');

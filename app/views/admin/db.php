@@ -1,16 +1,16 @@
 <?php /** @var string $message */ ?>
 <div class="guest-card">
-  <p class="eyebrow">Base de données</p>
-  <h2 class="guest-title">Connexion<br><em>impossible.</em></h2>
-  <p class="guest-sub">L’espace d’administration n’a pas pu joindre la base de données.</p>
+  <p class="eyebrow">Database</p>
+  <h2 class="guest-title">Connessione<br><em>non riuscita.</em></h2>
+  <p class="guest-sub">Lo spazio di amministrazione non ha potuto raggiungere il database.</p>
   <div class="notice err">
-    <b>Détail technique</b>
+    <b>Dettaglio tecnico</b>
     <p><?=e($message)?></p>
   </div>
   <ol class="steps">
-    <li>Vérifiez les identifiants MySQL dans <code>app/config.php</code>.</li>
-    <li>Importez <code>sql/schema.sql</code> puis <code>sql/migration_admin.sql</code>.</li>
-    <li>Rechargez cette page.</li>
+    <li>Controllate le credenziali MySQL in <code>app/config.php</code>.</li>
+    <li>Importate <code>sql/schema.sql</code> e poi <code>sql/migration_admin.sql</code>.</li>
+    <li>Ricaricate questa pagina.</li>
   </ol>
-  <a class="abtn line full" href="/admin">Réessayer</a>
+  <a class="abtn line full" href="/admin">Riprova</a>
 </div>

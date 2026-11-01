@@ -7,9 +7,18 @@
 3. Lancer : `php -S localhost:8000 -t public public/index.php` (ou Apache avec mod_rewrite sur `public/`).
 4. Compléter `settings` (téléphone, adresse, WhatsApp, maps_embed), `gallery`, `reviews`.
 
-**Base déjà installée avant l'espace d'administration ?** Importer une seule fois
-`sql/migration_admin.sql` (création de `daily_special` et `login_attempts`, ajout des textes
-éditables). Aucune donnée existante n'est écrasée.
+**Le site et l'administration sont intégralement en italien** (interface, contenus, catégories et
+plats de démonstration, `lang="it"`, dates en italien).
+
+**Base déjà installée ?** Importer une seule fois, dans cet ordre :
+
+| Fichier | Rôle |
+| --- | --- |
+| `sql/migration_admin.sql` | crée `daily_special` et `login_attempts`, ajoute les textes éditables |
+| `sql/migration_it.sql` | traduit en italien les catégories, plats, légendes de galerie et textes de la maison |
+
+Les deux migrations sont conditionnelles : les plats ou catégories que vous avez déjà renommés
+sont conservés, et les textes ne sont remplacés que s'ils sont encore dans leur version d'origine.
 
 ## Espace d'administration
 
@@ -56,6 +65,7 @@ app/Controllers/AdminController.php   routes, authentification, CRUD
 app/views/admin/                      mise en page + pages de l'administration
 public/assets/css/admin.css           charte de l'administration (encre, ivoire, or)
 public/assets/js/admin.js             interactions (menu mobile, confirmations, aperçus)
-sql/migration_admin.sql               migration pour une base existante
+sql/migration_admin.sql               migration technique pour une base existante
+sql/migration_it.sql                  passage des contenus en italien
 tools/admin-password.php              création / réinitialisation d'un compte
 ```

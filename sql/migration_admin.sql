@@ -38,9 +38,9 @@ CREATE TABLE IF NOT EXISTS daily_special(
 
 -- Textes éditables depuis l'administration
 INSERT IGNORE INTO settings(k, v) VALUES
-('about_text','Inspirée des grandes maisons tunisiennes et des palais ottomans, notre cuisine raconte un pays de mémoire : semoule roulée à la main, grillades à la braise, brik à l’œuf coulant, thé servi avant la commande.'),
-('menu_note','Suppléments : œuf, thon, salami, merguez, viande hachée, fromage, pommes de terre frites.'),
-('quote_text','« À Tunis, on ne compte pas les plats, on compte les convives. »');
+('about_text','Ispirata alle grandi case tunisine e ai palazzi ottomani, la nostra cucina racconta un paese di memoria: semolino arrotolato a mano, grigliate alla brace, brik dall’uovo morbido, tè servito prima dell’ordine.'),
+('menu_note','Supplementi: uovo, tonno, salame, merguez, carne macinata, formaggio, patate fritte.'),
+('quote_text','« A Tunisi non si contano i piatti, si contano gli ospiti. »');
 
 -- Ensuite : ouvrez /admin dans le navigateur pour créer le premier compte.
 -- Ligne de commande équivalente : php tools/admin-password.php email@exemple.com 'motdepasse'

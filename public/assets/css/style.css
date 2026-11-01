@@ -98,6 +98,20 @@ body.nav-open{overflow:hidden;touch-action:none}
 #burger[aria-expanded="true"] i:first-child{top:15px;transform:rotate(45deg)}
 #burger[aria-expanded="true"] i:last-child{top:15px;transform:rotate(-45deg)}
 
+/* Bloc « Nous trouver » en mobile : contenu sur toute la largeur, carte en dessous.
+   (le sélecteur reprend la spécificité de la règle desktop, sinon :has() l'emporte) */
+@media(max-width:960px){
+  #contact .two,
+  .two:has(.map),
+  .two:has(>div:first-child:not(.side)){grid-template-columns:1fr;gap:2.2rem}
+  #contact .two>*{min-width:0;width:100%}
+  #contact .map{width:100%}
+  #contact .map iframe{width:100%;height:clamp(280px,68vw,440px);min-height:0;display:block}
+  #contact .hrs{width:100%}
+  #contact .acts{gap:1.1rem 1.4rem}
+  #contact #ctForm{gap:1.1rem}
+}
+
 /* Écrans intermédiaires : l'entête se resserre avant de passer au menu mobile */
 @media(max-width:1180px){
   .topbar{padding:0 1.5rem;font-size:.62rem;letter-spacing:.16em}

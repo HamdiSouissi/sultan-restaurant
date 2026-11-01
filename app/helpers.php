@@ -43,12 +43,12 @@ function money($v): string {
   return number_format((float)$v, 2, ',', ' ').' €';
 }
 
-function fr_date(?string $date, bool $withYear = false): string {
+function it_date(?string $date, bool $withYear = false): string {
   if (!$date || $date === '0000-00-00') return '';
   $ts = strtotime($date);
   if (!$ts) return '';
-  $days = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
-  $months = [1=>'janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+  $days = ['domenica','lunedì','martedì','mercoledì','giovedì','venerdì','sabato'];
+  $months = [1=>'gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
   $out = $days[(int)date('w', $ts)].' '.date('j', $ts).' '.$months[(int)date('n', $ts)];
   return $withYear ? $out.' '.date('Y', $ts) : $out;
 }
@@ -60,7 +60,7 @@ function slugify(string $text): string {
   $slug = strtr(mb_strtolower(trim($text), 'UTF-8'), $map);
   $slug = preg_replace('/[^a-z0-9]+/', '-', $slug) ?? '';
   $slug = trim($slug, '-');
-  return $slug !== '' ? $slug : 'categorie';
+  return $slug !== '' ? $slug : 'categoria';
 }
 
 function admin_url(string $path = ''): string {
@@ -89,16 +89,16 @@ function upload_image(string $field): ?string {
   $f = $_FILES[$field];
   $err = (int)($f['error'] ?? UPLOAD_ERR_NO_FILE);
   if ($err === UPLOAD_ERR_NO_FILE) return null;
-  if ($err !== UPLOAD_ERR_OK) throw new RuntimeException('L’envoi de l’image a échoué (code '.$err.').');
-  if (!is_uploaded_file($f['tmp_name'])) throw new RuntimeException('Fichier temporaire invalide.');
-  if (($f['size'] ?? 0) > 5 * 1024 * 1024) throw new RuntimeException('Image trop lourde : 5 Mo maximum.');
+  if ($err !== UPLOAD_ERR_OK) throw new RuntimeException('Invio dell’immagine non riuscito (codice '.$err.').');
+  if (!is_uploaded_file($f['tmp_name'])) throw new RuntimeException('File temporaneo non valido.');
+  if (($f['size'] ?? 0) > 5 * 1024 * 1024) throw new RuntimeException('Immagine troppo pesante: 5 MB al massimo.');
   $info = @getimagesize($f['tmp_name']);
   $types = [IMAGETYPE_JPEG => 'jpg', IMAGETYPE_PNG => 'png', IMAGETYPE_WEBP => 'webp', IMAGETYPE_GIF => 'gif'];
-  if (!$info || !isset($types[$info[2]])) throw new RuntimeException('Format non pris en charge (JPG, PNG ou WEBP).');
+  if (!$info || !isset($types[$info[2]])) throw new RuntimeException('Formato non supportato (JPG, PNG o WEBP).');
   $dir = dirname(__DIR__).'/public/assets/uploads';
-  if (!is_dir($dir) && !mkdir($dir, 0755, true) && !is_dir($dir)) throw new RuntimeException('Dossier d’envoi inaccessible.');
+  if (!is_dir($dir) && !mkdir($dir, 0755, true) && !is_dir($dir)) throw new RuntimeException('Cartella di caricamento non accessibile.');
   $name = bin2hex(random_bytes(10)).'.'.$types[$info[2]];
-  if (!move_uploaded_file($f['tmp_name'], $dir.'/'.$name)) throw new RuntimeException('Impossible d’enregistrer l’image.');
+  if (!move_uploaded_file($f['tmp_name'], $dir.'/'.$name)) throw new RuntimeException('Impossibile salvare l’immagine.');
   @chmod($dir.'/'.$name, 0644);
   return '/assets/uploads/'.$name;
 }

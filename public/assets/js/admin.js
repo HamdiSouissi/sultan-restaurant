@@ -1,5 +1,5 @@
 'use strict';
-/* Sultan — espace d'administration : interactions légères (aucune dépendance). */
+/* Sultan — spazio di amministrazione: interazioni leggere, senza dipendenze. */
 (function () {
   const $  = (sel, ctx = document) => ctx.querySelector(sel);
   const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
@@ -42,7 +42,7 @@
   /* --- confirmations --- */
   $$('form[data-confirm]').forEach((form) => {
     form.addEventListener('submit', (e) => {
-      const message = form.getAttribute('data-confirm') || 'Confirmer cette action ?';
+      const message = form.getAttribute('data-confirm') || 'Confermare questa azione?';
       if (!window.confirm(message)) e.preventDefault();
     });
   });
