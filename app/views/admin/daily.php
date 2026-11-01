@@ -79,7 +79,7 @@ $active = $hasOld ? isset($_SESSION['old']['active']) : (bool)($d['active'] ?? 1
           <span>Foto</span>
           <?php if (!empty($d['image'])): ?>
             <div class="current-img">
-              <img src="<?=e($d['image'])?>" alt="">
+              <img loading="lazy" decoding="async" src="<?=e(img_url($d['image']))?>" alt="">
               <label class="check"><input type="checkbox" name="remove_image" value="1"><span>Rimuovi la foto</span></label>
             </div>
           <?php endif; ?>
@@ -106,7 +106,7 @@ $active = $hasOld ? isset($_SESSION['old']['active']) : (bool)($d['active'] ?? 1
       <div class="site-preview">
         <div class="site-preview-media">
           <?php if (!empty($d['image'])): ?>
-            <img src="<?=e($d['image'])?>" alt="">
+            <img loading="lazy" decoding="async" src="<?=e(img_url($d['image']))?>" alt="">
           <?php else: ?>
             <span>Foto del piatto</span>
           <?php endif; ?>

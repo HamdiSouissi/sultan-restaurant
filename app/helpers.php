@@ -58,6 +58,55 @@ function it_count(int $n, string $singular, string $plural): string {
   return $n.' '.($n === 1 ? $singular : $plural);
 }
 
+/* ------------------------------------------------------------------ *
+ *  Images — versions WebP, dimensions et chargement différé
+ * ------------------------------------------------------------------ */
+
+/** Chemin public de l'image ; bascule sur le .webp s'il existe à côté. */
+function img_url(string $src): string {
+  if ($src === '' || preg_match('#^https?://#i', $src)) return $src;
+  $src = '/'.ltrim($src, '/');
+  $webp = preg_replace('#\.(jpe?g|png)$#i', '.webp', $src);
+  if ($webp !== $src && is_file(dirname(__DIR__).'/public'.$webp)) return $webp;
+  return $src;
+}
+
+/** Dimensions réelles d'une image locale (0,0 si inconnues). */
+function img_size(string $src): array {
+  static $cache = [];
+  if (isset($cache[$src])) return $cache[$src];
+  $file = dirname(__DIR__).'/public/'.$src;
+  $size = [0, 0];
+  if (!preg_match('#^https?://#i', $src) && is_file($file)) {
+    $info = @getimagesize($file);
+    if ($info) $size = [(int)$info[0], (int)$info[1]];
+  }
+  return $cache[$src] = $size;
+}
+
+/**
+ * <picture> : WebP quand il existe, repli JPEG, width/height pour éviter les
+ * sauts de mise en page, et chargement différé par défaut.
+ */
+function picture(string $src, string $alt = '', array $attrs = [], bool $lazy = true): string {
+  $remote = (bool) preg_match('#^https?://#i', $src);
+  $local  = $remote ? $src : '/'.ltrim($src, '/');
+  $out = ' alt="'.e($alt).'"';
+  if (!$remote) {
+    [$w, $h] = img_size($local);
+    if ($w > 0 && $h > 0) $out .= ' width="'.$w.'" height="'.$h.'"';
+  }
+  foreach ($attrs as $k => $v) {
+    if ($v === true)      $out .= ' '.$k;
+    elseif ($v !== false && $v !== null && $v !== '') $out .= ' '.$k.'="'.e($v).'"';
+  }
+  $out .= $lazy ? ' loading="lazy" decoding="async"' : ' decoding="async"';
+  $img = '<img src="'.e($local).'"'.$out.'>';
+  $webp = $remote ? $remote : img_url($local);
+  if ($webp === $local) return $img;
+  return '<picture><source srcset="'.e($webp).'" type="image/webp">'.$img.'</picture>';
+}
+
 function slugify(string $text): string {
   $map = ['à'=>'a','á'=>'a','â'=>'a','ä'=>'a','ã'=>'a','å'=>'a','æ'=>'ae','ç'=>'c','è'=>'e','é'=>'e','ê'=>'e','ë'=>'e',
           'ì'=>'i','í'=>'i','î'=>'i','ï'=>'i','ñ'=>'n','ò'=>'o','ó'=>'o','ô'=>'o','ö'=>'o','õ'=>'o','œ'=>'oe',
@@ -89,6 +138,43 @@ function clean_path(?string $path): ?string {
  * Téléverse une image depuis $_FILES[$field] et renvoie son chemin public.
  * Lève une RuntimeException lisible en cas de problème.
  */
+/** Allège une image (max 1600 px, qualité 82) et crée sa version WebP. */
+function optimize_image(string $file, int $max = 1600, int $quality = 82): void {
+  if (!function_exists('imagecreatetruecolor') || !is_file($file)) return;
+  $info = @getimagesize($file);
+  if (!$info) return;
+  [$w, $h, $type] = $info;
+  if ($w < 1 || $h < 1) return;
+  if ($type === IMAGETYPE_JPEG)      $src = @imagecreatefromjpeg($file);
+  elseif ($type === IMAGETYPE_PNG)   $src = @imagecreatefrompng($file);
+  elseif (defined('IMAGETYPE_WEBP') && $type === IMAGETYPE_WEBP && function_exists('imagecreatefromwebp')) $src = @imagecreatefromwebp($file);
+  else return;
+  if (!$src) return;
+  $scale = min(1, $max / max($w, $h));
+  $nw = max(1, (int)round($w * $scale));
+  $nh = max(1, (int)round($h * $scale));
+  $dst = $src;
+  if ($scale < 1 && ($small = imagecreatetruecolor($nw, $nh))) {
+    imagecopyresampled($small, $src, 0, 0, 0, 0, $nw, $nh, $w, $h);
+    $dst = $small;
+  }
+  if ($type === IMAGETYPE_PNG) {
+    imagealphablending($dst, false); imagesavealpha($dst, true);
+    @imagepng($dst, $file, 8);
+  } elseif ($type === IMAGETYPE_WEBP && function_exists('imagewebp')) {
+    @imagewebp($dst, $file, $quality);
+  } else {
+    @imagejpeg($dst, $file, $quality);
+  }
+  if (function_exists('imagewebp')) {
+    $webp = preg_replace('#\.(jpe?g|png)$#i', '.webp', $file);
+    if ($webp !== $file) @imagewebp($dst, $webp, $quality);
+  }
+  if ($dst !== $src) imagedestroy($dst);
+  imagedestroy($src);
+  @chmod($file, 0644);
+}
+
 function upload_image(string $field): ?string {
   if (!isset($_FILES[$field]) || !is_array($_FILES[$field])) return null;
   $f = $_FILES[$field];
@@ -105,6 +191,7 @@ function upload_image(string $field): ?string {
   $name = bin2hex(random_bytes(10)).'.'.$types[$info[2]];
   if (!move_uploaded_file($f['tmp_name'], $dir.'/'.$name)) throw new RuntimeException('Impossibile salvare l’immagine.');
   @chmod($dir.'/'.$name, 0644);
+  optimize_image($dir.'/'.$name);
   return '/assets/uploads/'.$name;
 }
 

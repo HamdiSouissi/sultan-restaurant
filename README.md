@@ -40,6 +40,17 @@ des suppléments se règle dans **Informazioni** (`menu_note`). Pour une base d�
 français, `sql/migration_it.sql` traduit catégories, plats, allergènes, textes de la maison et
 légendes de la galerie.
 
+## Images (optimisées)
+
+- Les visuels de `public/assets/img/` sont redimensionnés à la taille où ils sont réellement
+  affichés (400 px à 1920 px), recompressés sans métadonnées : le dossier est passé de **7,9 Mo à
+  4,7 Mo** de JPEG, avec en plus une version **WebP** de chaque photo (≈ 1,8 Mo au total).
+- `picture()` (`app/helpers.php`) produit `<picture>` + WebP, un repli JPEG, les attributs
+  `width`/`height` (pas de saut de mise en page) et `loading="lazy"` ; `img_url()` sert la version
+  WebP pour les fonds CSS. `picture{display:contents}` évite toute incidence sur la mise en page.
+- Les images envoyées depuis l'administration passent par `optimize_image()` : rotation, réduction à
+  1600 px maximum, recompression qualité 82 et création du `.webp` voisin.
+
 ## Espace d'administration
 
 Ouvrir **`/admin`** dans le navigateur.

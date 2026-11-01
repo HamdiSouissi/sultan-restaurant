@@ -10,7 +10,7 @@
 <div class="gallery-grid">
   <?php foreach ($items as $item): ?>
     <figure class="gal-card">
-      <div class="gal-thumb"><img src="<?=e($item['path'])?>" alt="" loading="lazy"></div>
+      <div class="gal-thumb"><img src="<?=e(img_url($item['path']))?>" alt="" loading="lazy" decoding="async"></div>
       <form method="post" action="/admin/galerie/enregistrer" class="form gal-form" enctype="multipart/form-data">
         <input type="hidden" name="csrf" value="<?=csrf()?>">
         <input type="hidden" name="id" value="<?= (int)$item['id'] ?>">

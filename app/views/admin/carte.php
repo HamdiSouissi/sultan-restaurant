@@ -53,7 +53,7 @@ $isChecked = fn(string $k, $fallback) => $hasOld ? isset($_SESSION['old'][$k]) :
               <td>
                 <div class="media-cell">
                   <?php if (!empty($d['image'])): ?>
-                    <img src="<?=e($d['image'])?>" alt="">
+                    <img loading="lazy" decoding="async" src="<?=e(img_url($d['image']))?>" alt="">
                   <?php else: ?>
                     <span class="thumb-empty">✦</span>
                   <?php endif; ?>
@@ -158,7 +158,7 @@ $isChecked = fn(string $k, $fallback) => $hasOld ? isset($_SESSION['old'][$k]) :
           <span>Foto del piatto</span>
           <?php if (!empty($dish['image'])): ?>
             <div class="current-img">
-              <img src="<?=e($dish['image'])?>" alt="">
+              <img loading="lazy" decoding="async" src="<?=e(img_url($dish['image']))?>" alt="">
               <label class="check"><input type="checkbox" name="remove_image" value="1"><span>Rimuovi la foto</span></label>
             </div>
           <?php endif; ?>

@@ -67,7 +67,7 @@ $statusLabel = ['new' => 'Nuova', 'confirmed' => 'Confermata', 'cancelled' => 'A
       <?php if ($daily && !empty($daily['name'])): ?>
         <div class="daily-row">
           <?php if (!empty($daily['image'])): ?>
-            <img class="daily-img" src="<?=e($daily['image'])?>" alt="">
+            <img class="daily-img" src="<?=e(img_url($daily['image']))?>" alt="" decoding="async">
           <?php else: ?>
             <span class="daily-img empty-img">Piatto</span>
           <?php endif; ?>
