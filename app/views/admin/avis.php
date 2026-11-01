@@ -13,14 +13,14 @@ $approved = $hasOld ? isset($_SESSION['old']['approved']) : (bool)$review['appro
     <h2 class="pg-title">Les <em>avis</em> de la table.</h2>
     <p class="pg-sub">Publiez les témoignages de vos hôtes ; seuls les avis validés apparaissent sur le site.</p>
   </div>
-  <div class="pg-acts"><a class="abtn gold" href="/admin/avis?new=1">Ajouter un avis</a></div>
+  <div class="pg-acts"><a class="abtn gold" href="/admin/avis?new=1#editeur">Ajouter un avis</a></div>
 </section>
 
 <div class="split-edit">
   <section class="card panel-list">
     <header class="card-head"><div><p class="eyebrow"><?= count($items) ?> avis</p><h3>Tous les témoignages</h3></div></header>
     <?php if (!$items): ?>
-      <div class="empty-state"><p>Aucun avis enregistré.</p><a class="abtn gold sm" href="/admin/avis?new=1">Ajouter un avis</a></div>
+      <div class="empty-state"><p>Aucun avis enregistré.</p><a class="abtn gold sm" href="/admin/avis?new=1#editeur">Ajouter un avis</a></div>
     <?php else: ?>
       <ul class="review-list">
         <?php foreach ($items as $r): ?>
@@ -33,7 +33,7 @@ $approved = $hasOld ? isset($_SESSION['old']['approved']) : (bool)$review['appro
             <div class="review-foot">
               <small><?=e($r['author'])?> · <?=e(ucfirst((string)$r['source']))?></small>
               <div class="row-acts">
-                <a class="icon-btn" href="/admin/avis?edit=<?= (int)$r['id'] ?>">Modifier</a>
+                <a class="icon-btn" href="/admin/avis?edit=<?= (int)$r['id'] ?>#editeur">Modifier</a>
                 <form method="post" action="/admin/avis/supprimer" data-confirm="Supprimer cet avis ?">
                   <input type="hidden" name="csrf" value="<?=csrf()?>">
                   <input type="hidden" name="id" value="<?= (int)$r['id'] ?>">
@@ -47,13 +47,13 @@ $approved = $hasOld ? isset($_SESSION['old']['approved']) : (bool)$review['appro
     <?php endif; ?>
   </section>
 
-  <section class="card panel-edit">
+  <section class="card panel-edit" id="editeur">
     <?php if (!$isEditor): ?>
       <div class="editor-empty">
         <span class="ornament">✦</span>
         <h3>Modérer les avis</h3>
         <p class="muted">Choisissez un avis pour le corriger, le publier ou le retirer.</p>
-        <a class="abtn line sm" href="/admin/avis?new=1">Ajouter un avis manuellement</a>
+        <a class="abtn line sm" href="/admin/avis?new=1#editeur">Ajouter un avis manuellement</a>
       </div>
     <?php else: ?>
       <header class="card-head">

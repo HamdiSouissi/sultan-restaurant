@@ -10,7 +10,7 @@ $statusLabel = ['new' => 'Nouvelle', 'confirmed' => 'Confirmée', 'cancelled' =>
     <p class="pg-sub">Tout ce qui fait vivre le Sultan : la carte, le plat du jour et les demandes de vos hôtes.</p>
   </div>
   <div class="pg-acts">
-    <a class="abtn gold" href="/admin/carte?new=1">Ajouter un plat</a>
+    <a class="abtn gold" href="/admin/carte?new=1#editeur">Ajouter un plat</a>
     <a class="abtn line" href="/admin/plat-du-jour">Plat du jour</a>
   </div>
 </section>

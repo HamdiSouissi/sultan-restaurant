@@ -16,7 +16,7 @@ $isChecked = fn(string $k, $fallback) => $hasOld ? isset($_SESSION['old'][$k]) :
     <h2 class="pg-title">Composer <em>le menu.</em></h2>
     <p class="pg-sub">Chaque plat, son prix, sa composition et sa disponibilité du jour.</p>
   </div>
-  <div class="pg-acts"><a class="abtn gold" href="/admin/carte?new=1">Nouveau plat</a></div>
+  <div class="pg-acts"><a class="abtn gold" href="/admin/carte?new=1#editeur">Nouveau plat</a></div>
 </section>
 
 <form class="toolbar" method="get" action="/admin/carte">
@@ -39,7 +39,7 @@ $isChecked = fn(string $k, $fallback) => $hasOld ? isset($_SESSION['old'][$k]) :
     <?php if (!$dishes): ?>
       <div class="empty-state">
         <p>Aucun plat ne correspond à cette recherche.</p>
-        <a class="abtn gold sm" href="/admin/carte?new=1">Créer un plat</a>
+        <a class="abtn gold sm" href="/admin/carte?new=1#editeur">Créer un plat</a>
       </div>
     <?php else: ?>
       <div class="table-wrap">
@@ -82,7 +82,7 @@ $isChecked = fn(string $k, $fallback) => $hasOld ? isset($_SESSION['old'][$k]) :
                 </form>
               </td>
               <td class="ta-r row-acts">
-                <a class="icon-btn" href="/admin/carte?edit=<?= (int)$d['id'] ?>" title="Modifier">Modifier</a>
+                <a class="icon-btn" href="/admin/carte?edit=<?= (int)$d['id'] ?>#editeur" title="Modifier">Modifier</a>
                 <form method="post" action="/admin/carte/supprimer" data-confirm="Supprimer « <?=e($d['name'])?> » de la carte ?">
                   <input type="hidden" name="csrf" value="<?=csrf()?>">
                   <input type="hidden" name="id" value="<?= (int)$d['id'] ?>">
@@ -103,7 +103,7 @@ $isChecked = fn(string $k, $fallback) => $hasOld ? isset($_SESSION['old'][$k]) :
         <span class="ornament">✦</span>
         <h3>Modifier un plat</h3>
         <p class="muted">Sélectionnez un plat dans la liste pour en changer le prix, la composition ou la photo.</p>
-        <a class="abtn line sm" href="/admin/carte?new=1">Ou créer un nouveau plat</a>
+        <a class="abtn line sm" href="/admin/carte?new=1#editeur">Ou créer un nouveau plat</a>
       </div>
     <?php else: ?>
       <header class="card-head">

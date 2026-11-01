@@ -12,7 +12,7 @@
   --side-w:262px;
 }
 *{box-sizing:border-box;margin:0}
-html{-webkit-text-size-adjust:100%}
+html{-webkit-text-size-adjust:100%;scroll-padding-top:104px;scroll-behavior:smooth}
 body.adm{
   font:300 .95rem/1.7 var(--sans);
   background:
@@ -189,7 +189,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.82em;bac
 }
 
 /* ---------------- messages flash ---------------- */
-.flash-zone{position:fixed;top:1.1rem;right:1.1rem;z-index:60;display:grid;gap:.5rem;max-width:min(400px,90vw)}
+.flash-zone{position:fixed;top:5.2rem;right:1.2rem;z-index:60;display:grid;gap:.5rem;max-width:min(400px,90vw)}
 .flash{
   display:flex;align-items:flex-start;gap:.8rem;padding:.8rem 1rem;
   background:rgba(23,20,18,.97);border:1px solid var(--line);border-left:2px solid var(--gold);
@@ -484,7 +484,7 @@ input[type=date],input[type=time]{color-scheme:dark}
 }
 @media (max-width:1024px){
   .split-edit,.split-edit.wide-right{grid-template-columns:1fr}
-  .panel-edit{position:static}
+  .panel-edit{position:static;order:-1}
   .two-col{grid-template-columns:1fr}
 }
 @media (max-width:900px){
@@ -497,6 +497,7 @@ input[type=date],input[type=time]{color-scheme:dark}
   .sidebar.open{transform:none}
   .burger{display:block}
   .topbar{padding:1rem 1.1rem;gap:.9rem}
+  .flash-zone{top:4.6rem;right:.8rem;left:.8rem;max-width:none}
   .topbar h1{font-size:1.35rem}
   .content{padding:1.4rem 1.05rem 2.4rem}
   .adm-foot{padding:1rem 1.1rem}

@@ -14,7 +14,7 @@ foreach ($categories as $c) $total += (int)$c['n'];
     <h2 class="pg-title">Les <em>familles</em> du menu.</h2>
     <p class="pg-sub"><?= count($categories) ?> catégories · <?= $total ?> plats rangés par famille.</p>
   </div>
-  <div class="pg-acts"><a class="abtn gold" href="/admin/categories?new=1">Nouvelle catégorie</a></div>
+  <div class="pg-acts"><a class="abtn gold" href="/admin/categories?new=1#editeur">Nouvelle catégorie</a></div>
 </section>
 
 <div class="split-edit">
@@ -26,7 +26,7 @@ foreach ($categories as $c) $total += (int)$c['n'];
     <?php if (!$categories): ?>
       <div class="empty-state">
         <p>Aucune catégorie. Créez « Entrées », « Grillades », « Couscous »… pour commencer.</p>
-        <a class="abtn gold sm" href="/admin/categories?new=1">Créer une catégorie</a>
+        <a class="abtn gold sm" href="/admin/categories?new=1#editeur">Créer une catégorie</a>
       </div>
     <?php else: ?>
       <ul class="catlist">
@@ -50,7 +50,7 @@ foreach ($categories as $c) $total += (int)$c['n'];
                 <input type="hidden" name="dir" value="down">
                 <button class="icon-btn" title="Descendre"<?= $i === count($categories) - 1 ? ' disabled' : ''?>>↓</button>
               </form>
-              <a class="icon-btn" href="/admin/categories?edit=<?= (int)$c['id'] ?>">Modifier</a>
+              <a class="icon-btn" href="/admin/categories?edit=<?= (int)$c['id'] ?>#editeur">Modifier</a>
               <form method="post" action="/admin/categories/supprimer" data-confirm="Supprimer la catégorie « <?=e($c['name'])?> » ?">
                 <input type="hidden" name="csrf" value="<?=csrf()?>">
                 <input type="hidden" name="id" value="<?= (int)$c['id'] ?>">
@@ -63,13 +63,13 @@ foreach ($categories as $c) $total += (int)$c['n'];
     <?php endif; ?>
   </section>
 
-  <section class="card panel-edit">
+  <section class="card panel-edit" id="editeur">
     <?php if (!$isEditor): ?>
       <div class="editor-empty">
         <span class="ornament">✦</span>
         <h3>Catégories de la carte</h3>
         <p class="muted">Les catégories organisent les onglets du menu. Choisissez un nom clair et un ordre d’affichage.</p>
-        <a class="abtn line sm" href="/admin/categories?new=1">Créer une catégorie</a>
+        <a class="abtn line sm" href="/admin/categories?new=1#editeur">Créer une catégorie</a>
       </div>
     <?php else: ?>
       <header class="card-head">
