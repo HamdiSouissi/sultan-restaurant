@@ -53,6 +53,11 @@ function it_date(?string $date, bool $withYear = false): string {
   return $withYear ? $out.' '.date('Y', $ts) : $out;
 }
 
+/** « 1 piatto », « 3 piatti » : plurale italiano corretto per i contatori. */
+function it_count(int $n, string $singular, string $plural): string {
+  return $n.' '.($n === 1 ? $singular : $plural);
+}
+
 function slugify(string $text): string {
   $map = ['à'=>'a','á'=>'a','â'=>'a','ä'=>'a','ã'=>'a','å'=>'a','æ'=>'ae','ç'=>'c','è'=>'e','é'=>'e','ê'=>'e','ë'=>'e',
           'ì'=>'i','í'=>'i','î'=>'i','ï'=>'i','ñ'=>'n','ò'=>'o','ó'=>'o','ô'=>'o','ö'=>'o','õ'=>'o','œ'=>'oe',

@@ -35,7 +35,7 @@ foreach ($categories as $c) $total += (int)$c['n'];
             <span class="catitem-num"><?= str_pad((string)($i + 1), 2, '0', STR_PAD_LEFT) ?></span>
             <div class="catitem-main">
               <b><?=e($c['name'])?></b>
-              <small>/<?=e($c['slug'])?> · <?= (int)$c['n'] ?> piatto<?= (int)$c['n'] > 1 ? 'i' : ''?></small>
+              <small>/<?=e($c['slug'])?> · <?= e(it_count((int)$c['n'], 'piatto', 'piatti')) ?></small>
             </div>
             <div class="catitem-acts">
               <form method="post" action="/admin/categories/deplacer">
@@ -102,12 +102,12 @@ foreach ($categories as $c) $total += (int)$c['n'];
         <div class="danger-zone">
           <p class="eyebrow">Zona sensibile</p>
           <h4>Eliminare questa categoria</h4>
-          <p class="muted"><?= (int)$editing['n'] > 0 ? 'Questa categoria contiene '.(int)$editing['n'].' piatto/i.' : 'Questa categoria è vuota.'?></p>
+          <p class="muted"><?= (int)$editing['n'] > 0 ? 'Questa categoria contiene '.it_count((int)$editing['n'], 'piatto', 'piatti').'.' : 'Questa categoria è vuota.'?></p>
           <form method="post" action="/admin/categories/supprimer" class="form" data-confirm="Eliminare definitivamente « <?=e($editing['name'])?> »?">
             <input type="hidden" name="csrf" value="<?=csrf()?>">
             <input type="hidden" name="id" value="<?= (int)$editing['id'] ?>">
             <?php if ((int)$editing['n'] > 0): ?>
-              <label class="check"><input type="checkbox" name="force" value="1" required><span>Elimina anche i <?= (int)$editing['n'] ?> piatto/i associati</span></label>
+              <label class="check"><input type="checkbox" name="force" value="1" required><span>Elimina anche <?= e(it_count((int)$editing['n'], 'piatto associato', 'piatti associati')) ?></span></label>
             <?php endif; ?>
             <button class="abtn danger full">Elimina la categoria</button>
           </form>

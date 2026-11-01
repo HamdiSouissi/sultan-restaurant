@@ -20,6 +20,26 @@ plats de démonstration, `lang="it"`, dates en italien).
 Les deux migrations sont conditionnelles : les plats ou catégories que vous avez déjà renommés
 sont conservés, et les textes ne sont remplacés que s'ils sont encore dans leur version d'origine.
 
+## La carte (tutta in italiano)
+
+La base de démonstration contient **8 catégories** et **51 plats** entièrement en italien, avec
+description, prix, allergènes et photo :
+
+| Catégorie | Plats |
+| --- | --- |
+| Panini & street food | Makloub (tonno, merguez, pollo, Sultan), baguette farcie, soffiato, panino kafteji, mlawi, chapati, tacos XL |
+| Antipasti & insalate | brik, fricassé, tajine, insalata tunisina, mechouia, carote (houria), ojja, piatti misti, lablabi |
+| Grigliate | pollo, carne macinata, merguez, costolette d'agnello, mista, pesce |
+| Couscous | agnello, pollo, besbes, pesce, calamari ripieni |
+| Pasta & riso | frutti di mare, polpo, agnello e manzo, riso jerbi, calamari ripieni |
+| Tajine & bastila | barkouk, pollo limone e olive, pesce, bastila di pesce e di pollo |
+| Stufati del giorno | mloukhia, piselli, fagioli bianchi, kamounia, scarpetta (mosli) |
+
+Les noms, descriptions et allergènes se modifient depuis **Administration → Il menù** ; le texte
+des suppléments se règle dans **Informazioni** (`menu_note`). Pour une base déjà remplie en
+français, `sql/migration_it.sql` traduit catégories, plats, allergènes, textes de la maison et
+légendes de la galerie.
+
 ## Espace d'administration
 
 Ouvrir **`/admin`** dans le navigateur.

@@ -2,12 +2,12 @@
 --  Sultan — base esistente : passaggio dei contenuti all'italiano
 --  Da eseguire una sola volta su un database già installato (phpMyAdmin).
 --
---  Les mises à jour ciblent les valeurs françaises d'origine : si vous
---  avez déjà renommé une catégorie ou un plat, votre texte est conservé.
+--  Gli aggiornamenti colpiscono solo i valori francesi d'origine: se avete
+--  già rinominato una categoria o un piatto, il vostro testo viene conservato.
 -- =====================================================================
 USE sultan;
 
--- Catégories
+-- Categorie
 UPDATE categories SET name = CASE name
   WHEN 'Sandwichs' THEN 'Panini & street food'
   WHEN 'Entrées & salades' THEN 'Antipasti & insalate'
@@ -19,7 +19,7 @@ UPDATE categories SET name = CASE name
   ELSE name END
 WHERE name IN ('Sandwichs', 'Entrées & salades', 'Plats tunisiens', 'Grillades', 'Pâtes & riz', 'Tajines & bastila', 'Mijotés du jour');
 
--- Plats : nom, description et allergènes
+-- Piatti: nome, descrizione e allergeni
 UPDATE dishes SET
   name = CASE name
     WHEN 'Makloub thon' THEN 'Makloub al tonno'
@@ -57,10 +57,10 @@ UPDATE dishes SET
     WHEN 'Couscous calamars farcis' THEN 'Couscous con calamari ripieni'
     WHEN 'Pâtes fruits de mer royale' THEN 'Pasta ai frutti di mare royale'
     WHEN 'Pâtes poulpe' THEN 'Pasta al polpo'
-    WHEN 'Pâtes agneau-bœuf' THEN 'Pasta agnello e manzo'
+    WHEN 'Pâtes agneau-bœuf' THEN 'Pasta con agnello e manzo'
     WHEN 'Riz aux légumes (jerbi)' THEN 'Riso alle verdure (jerbi)'
     WHEN 'Riz calamars farcis' THEN 'Riso con calamari ripieni'
-    WHEN 'Riz agneau-bœuf' THEN 'Riso agnello e manzo'
+    WHEN 'Riz agneau-bœuf' THEN 'Riso con agnello e manzo'
     WHEN 'Tajine barkouk' THEN 'Tajine barkouk'
     WHEN 'Tajine poulet citron olives' THEN 'Tajine pollo limone e olive'
     WHEN 'Tajine poisson' THEN 'Tajine di pesce'
@@ -232,7 +232,7 @@ WHERE name IN ('Makloub thon',
   'Scarpetta (mosli) agneau',
   'Scarpetta (mosli) poisson');
 
--- Textes de la maison (uniquement s'ils sont encore en français)
+-- Testi della casa (solo se sono ancora in francese)
 UPDATE settings SET v = 'Cucina mediterranea · Street food tunisino' WHERE k = 'tagline' AND v = 'Cuisine méditerranéenne · Street food tunisienne';
 UPDATE settings SET v = 'Couscous, tajine, grigliate e panini di strada preparati ogni giorno, tra Tunisi e Istanbul.' WHERE k = 'description' AND v = 'Couscous, tajines, grillades et sandwichs de rue préparés chaque jour, entre Tunis et Istanbul.';
 UPDATE settings SET v = 'Ispirata alle grandi case tunisine e ai palazzi ottomani, la nostra cucina racconta un paese di memoria: semolino arrotolato a mano, grigliate alla brace, brik dall’uovo morbido, tè servito prima dell’ordine.' WHERE k = 'about_text' AND v = 'Inspirée des grandes maisons tunisiennes et des palais ottomans, notre cuisine raconte un pays de mémoire : semoule roulée à la main, grillades à la braise, brik à l’œuf coulant, thé servi avant la commande.';
@@ -240,7 +240,7 @@ UPDATE settings SET v = 'Supplementi: uovo, tonno, salame, merguez, carne macina
 UPDATE settings SET v = '« A Tunisi non si contano i piatti, si contano gli ospiti. »' WHERE k = 'quote_text' AND v = '« À Tunis, on ne compte pas les plats, on compte les convives. »';
 UPDATE settings SET v = REPLACE(v, 'Italie', 'Italia') WHERE k = 'address' AND v LIKE '%Italie%';
 
--- Légendes de la galerie
+-- Didascalie della galleria
 UPDATE gallery SET alt = CASE alt
   WHEN 'Festin d’agneau grillé, mezzés et thé' THEN 'Banchetto d’agnello grigliato, meze e tè'
   WHEN 'Brik à l’œuf coulant et thon' THEN 'Brik dall’uovo morbido con tonno'

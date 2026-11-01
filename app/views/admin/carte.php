@@ -12,7 +12,7 @@ $isChecked = fn(string $k, $fallback) => $hasOld ? isset($_SESSION['old'][$k]) :
 ?>
 <section class="pg-head">
   <div>
-    <p class="eyebrow">Il menù · <?= count($dishes) ?> piatto<?= count($dishes) > 1 ? 'i' : '' ?></p>
+    <p class="eyebrow">Il menù · <?= e(it_count(count($dishes), 'piatto', 'piatti')) ?></p>
     <h2 class="pg-title">Comporre <em>il menù.</em></h2>
     <p class="pg-sub">Ogni piatto, il suo prezzo, la sua composizione e la disponibilità del giorno.</p>
   </div>

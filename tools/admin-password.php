@@ -21,7 +21,7 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
   exit(1);
 }
 if (strlen($pass) < 10) {
-  fwrite(STDERR, "Le mot de passe doit contenir au moins 10 caractères.\n");
+  fwrite(STDERR, "La password deve contenere almeno 10 caratteri.\n");
   exit(1);
 }
 

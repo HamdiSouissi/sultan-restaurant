@@ -86,10 +86,10 @@ INSERT INTO dishes(category_id,name,description,price,allergens,featured,image) 
 (5,'Couscous con calamari ripieni','Semolino, calamari ripieni',12,'gluten, molluschi',0,NULL),
 (6,'Pasta ai frutti di mare royale','Pasta, frutti di mare',13,'gluten, crostacei, molluschi',0,NULL),
 (6,'Pasta al polpo','Pasta, polpo',10,'gluten, molluschi',0,NULL),
-(6,'Pasta agnello e manzo','Pasta, carne stufata',9,'gluten',0,NULL),
+(6,'Pasta con agnello e manzo','Pasta, carne stufata',9,'gluten',0,NULL),
 (6,'Riso alle verdure (jerbi)','Riso profumato, verdure',8,'',0,NULL),
 (6,'Riso con calamari ripieni','Riso, calamari ripieni',12,'molluschi',0,NULL),
-(6,'Riso agnello e manzo','Riso profumato, carne',9,'',0,NULL),
+(6,'Riso con agnello e manzo','Riso profumato, carne',9,'',0,NULL),
 (7,'Tajine barkouk','Manzo, prugne secche',10,'uova',0,NULL),
 (7,'Tajine pollo limone e olive','Pollo, limone, olive',8,'uova',0,NULL),
 (7,'Tajine di pesce','Nasello, patate, carote',9,'pesce',0,NULL),
@@ -127,5 +127,5 @@ INSERT INTO gallery(path,alt,sort) VALUES
 ('/assets/img/moderne.jpg','Sala bianca e blu',20),
 ('/assets/img/traditionnel.jpg','Sala delle lanterne e legno intagliato',21);
 INSERT INTO socials(network,url) VALUES('instagram','https://www.instagram.com/sultan__parma/'),('google','https://share.google/CJmpqGV76S8BhzZOz');
--- Administration : ouvrez /admin dans le navigateur pour créer le premier compte (assistant d'installation).
--- Compte par ligne de commande : php tools/admin-password.php email@exemple.com 'motdepasse'
+-- Amministrazione: aprite /admin nel browser per creare il primo account (procedura guidata).
+-- Account da riga di comando: php tools/admin-password.php email@esempio.com 'password'

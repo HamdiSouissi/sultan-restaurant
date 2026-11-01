@@ -418,7 +418,7 @@ final class AdminController {
 
     $count = $this->scalar('SELECT COUNT(*) FROM dishes WHERE category_id = ?', [$id]);
     if ($count > 0 && empty($_POST['force'])) {
-      flash('err', '« '.$row['name'].' » contiene '.$count.' piatto/i. Confermate l’eliminazione spuntando la casella prevista.');
+      flash('err', '« '.$row['name'].' » contiene '.it_count((int)$count, 'piatto', 'piatti').'. Confermate l’eliminazione spuntando la casella prevista.');
       redirect('/admin/categories?edit='.$id);
     }
     if ($count > 0) {
