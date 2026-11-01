@@ -12,7 +12,11 @@ addEventListener('load',()=>{
   $$('[data-n]').forEach(el=>ScrollTrigger.create({trigger:el,once:true,start:'top 92%',onEnter:()=>{const o={v:0};gsap.to(o,{v:+el.dataset.n,duration:calm?0:1.8,onUpdate:()=>el.textContent=Math.round(o.v)})}}));
 });
 const hd=$('#hd'),nav=$('#nav'),bg=$('#burger');addEventListener('scroll',()=>{hd.classList.toggle('sc',scrollY>40);$('#prog').style.width=(scrollY/(document.documentElement.scrollHeight-innerHeight)*100)+'%'},{passive:true});
-bg.onclick=()=>bg.setAttribute('aria-expanded',nav.classList.toggle('open'));$$('#nav a').forEach(a=>a.onclick=()=>{nav.classList.remove('open');bg.setAttribute('aria-expanded',false)});
+function setMenu(open){if(!nav||!bg)return;nav.classList.toggle('open',open);bg.setAttribute('aria-expanded',open?'true':'false');document.body.classList.toggle('nav-open',open)}
+if(bg&&nav)bg.onclick=()=>setMenu(!nav.classList.contains('open'));
+$$('#nav a').forEach(a=>a.onclick=()=>setMenu(false));
+addEventListener('keydown',e=>{if(e.key==='Escape')setMenu(false)});
+addEventListener('resize',()=>{if(innerWidth>960)setMenu(false)});
 const caps=$$('.cap');let capI=-1;
 function showCap(i,first){const n=caps[i],o=capI>=0?caps[capI]:null;capI=i;
   const inn=()=>{caps.forEach(c=>c.style.visibility='hidden');n.style.visibility='visible';if(calm)return;
