@@ -63,3 +63,20 @@ header.sc{top:0;background:#0e0d0cb8}
 .hero{height:100svh;min-height:720px;padding:150px 2.5rem 2.5rem}
 @media(max-width:960px){:root{--tb:32px}header{backdrop-filter:none;background:#0e0d0c99}header.sc{background:#0e0d0ccc}.hero{padding:120px 1rem 1rem}}
 .acts{display:flex;flex-wrap:wrap;gap:1.6rem;margin:1.4rem 0}.topbar a+a{margin-left:1.6rem}.map iframe{filter:sepia(.35) saturate(.8) contrast(1.05)}
+
+/* ---------- Plat du jour (piloté depuis l'administration) ---------- */
+.tdj{overflow:hidden;border-top:1px solid #c9a96a33;border-bottom:1px solid #c9a96a33}
+.tdj-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(2rem,5vw,4.5rem);align-items:center}
+.tdj-media{position:relative}
+.tdj-media .fr img{aspect-ratio:4/5;object-fit:cover;width:100%}
+.tdj-ph{aspect-ratio:4/5;display:grid;place-items:center;background:radial-gradient(circle at 50% 40%,#241d17,#12100d 70%);border:1px solid #c9a96a44}
+.tdj-ph span{font:300 2.2rem var(--serif);letter-spacing:.4em;text-transform:uppercase;color:#c9a96a66;writing-mode:vertical-rl}
+.tdj-seal{position:absolute;right:-14px;bottom:22px;background:#0e0d0c;border:1px solid var(--gold);color:var(--gold2);font-size:.6rem;letter-spacing:.26em;text-transform:uppercase;padding:.6rem 1rem;writing-mode:horizontal-tb}
+.tdj-txt h2{font-size:clamp(2.6rem,5.4vw,4.6rem);line-height:1;margin-bottom:.8rem}
+.tdj-date{font:italic 300 1.05rem var(--serif);color:var(--gold);margin-bottom:1.6rem;text-transform:capitalize}
+.tdj-ing{max-width:44ch;color:var(--sand);font-size:1rem;line-height:1.9;margin-bottom:1rem}
+.tdj-desc{max-width:44ch;font:italic 300 1.15rem var(--serif);color:#c8b79a;margin-bottom:1.8rem}
+.tdj-foot{display:flex;align-items:center;gap:1.8rem;flex-wrap:wrap;padding-top:1.6rem;border-top:1px solid #c9a96a33}
+.tdj-price{font:300 2.6rem var(--serif);color:var(--gold2);line-height:1}
+.tdj-foot small{font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:#8d7f6c}
+@media(max-width:960px){.tdj-grid{grid-template-columns:1fr;gap:2.5rem}.tdj-seal{right:0}.tdj-media .fr img{aspect-ratio:4/3}.tdj-price{font-size:2.1rem}}

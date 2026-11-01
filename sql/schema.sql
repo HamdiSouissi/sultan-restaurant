@@ -11,6 +11,25 @@ CREATE TABLE reservations(id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100), 
 CREATE TABLE contacts(id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(100), email VARCHAR(150), message TEXT, created TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
 CREATE TABLE newsletter(id INT AUTO_INCREMENT PRIMARY KEY, email VARCHAR(150) UNIQUE, created TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
 CREATE TABLE admins(id INT AUTO_INCREMENT PRIMARY KEY, email VARCHAR(150) UNIQUE, password_hash VARCHAR(255));
+CREATE TABLE IF NOT EXISTS daily_special(
+  id TINYINT UNSIGNED NOT NULL PRIMARY KEY,
+  name VARCHAR(120) NOT NULL,
+  description VARCHAR(255) NOT NULL DEFAULT '',
+  ingredients VARCHAR(400) NOT NULL DEFAULT '',
+  allergens VARCHAR(255) NOT NULL DEFAULT '',
+  price DECIMAL(6,2) NOT NULL,
+  image VARCHAR(255) DEFAULT NULL,
+  active TINYINT(1) NOT NULL DEFAULT 1,
+  served_on DATE DEFAULT NULL,
+  updated TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+CREATE TABLE IF NOT EXISTS login_attempts(
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  email VARCHAR(150) DEFAULT NULL,
+  ip VARCHAR(45) DEFAULT NULL,
+  created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX(created)
+);
 CREATE TABLE stats(day DATE PRIMARY KEY, visits INT DEFAULT 0);
 
 INSERT INTO settings VALUES
@@ -18,7 +37,10 @@ INSERT INTO settings VALUES
 ('description','Couscous, tajines, grillades et sandwichs de rue préparés chaque jour, entre Tunis et Istanbul.'),
 ('phone','+39 379 210 7500'),('whatsapp','393792107500'),('email',''),
 ('address','Strada Massimo D''Azeglio, 77/A, 43125 Parma PR, Italie'),('lat','44.80'),('lng','10.33'),
-('maps_embed','https://www.google.com/maps?q=Strada+Massimo+D%27Azeglio+77%2FA+43125+Parma&output=embed');
+('maps_embed','https://www.google.com/maps?q=Strada+Massimo+D%27Azeglio+77%2FA+43125+Parma&output=embed'),
+('about_text','Inspirée des grandes maisons tunisiennes et des palais ottomans, notre cuisine raconte un pays de mémoire : semoule roulée à la main, grillades à la braise, brik à l’œuf coulant, thé servi avant la commande.'),
+('menu_note','Suppléments : œuf, thon, salami, merguez, viande hachée, fromage, pommes de terre frites.'),
+('quote_text','« À Tunis, on ne compte pas les plats, on compte les convives. »');
 INSERT INTO categories(id,name,slug,sort) VALUES
 (1,'Sandwichs','c1',1),
 (2,'Entrées & salades','c2',2),
@@ -105,4 +127,5 @@ INSERT INTO gallery(path,alt,sort) VALUES
 ('/assets/img/moderne.jpg','Salle blanche et bleue',20),
 ('/assets/img/traditionnel.jpg','Salle aux lanternes et bois sculpté',21);
 INSERT INTO socials(network,url) VALUES('instagram','https://www.instagram.com/sultan__parma/'),('google','https://share.google/CJmpqGV76S8BhzZOz');
--- Admin : php -r "echo password_hash('MOT_DE_PASSE',PASSWORD_DEFAULT);" puis INSERT INTO admins(email,password_hash) VALUES(...)
+-- Administration : ouvrez /admin dans le navigateur pour créer le premier compte (assistant d'installation).
+-- Compte par ligne de commande : php tools/admin-password.php email@exemple.com 'motdepasse'
