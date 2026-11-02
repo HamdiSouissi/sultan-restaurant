@@ -61,7 +61,7 @@ $active = $hasOld ? isset($_SESSION['old']['active']) : (bool)($d['active'] ?? 1
 
         <label class="field">
           <span>Composizione</span>
-          <textarea name="ingredients" rows="4" required maxlength="400" placeholder="Uova in camicia, merguez grigliate, peperoni confit, pomodori freschi, harissa della casa, pane di semolino"><?=e($v('ingredients'))?></textarea>
+          <textarea name="ingredients" rows="4" required maxlength="400" placeholder="Uova in camicia, merguez grigliate, peperoni arrostiti, pomodori freschi, harissa della casa, pane di semolino"><?=e($v('ingredients'))?></textarea>
           <i class="hint">Questo testo appare sotto il nome del piatto nella pagina iniziale.</i>
         </label>
 

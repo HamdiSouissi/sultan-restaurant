@@ -15,10 +15,28 @@ plats de démonstration, `lang="it"`, dates en italien).
 | Fichier | Rôle |
 | --- | --- |
 | `sql/migration_admin.sql` | crée `daily_special` et `login_attempts`, ajoute les textes éditables |
-| `sql/migration_it.sql` | traduit en italien les catégories, plats, légendes de galerie et textes de la maison |
+| `sql/migration_it.sql` | traduit en italien les catégories, plats (nom, description, allergènes), légendes de galerie et textes de la maison |
 
 Les deux migrations sont conditionnelles : les plats ou catégories que vous avez déjà renommés
 sont conservés, et les textes ne sont remplacés que s'ils sont encore dans leur version d'origine.
+
+> **Vous avez déjà importé `sql/migration_it.sql` et certaines descriptions sont restées en
+> français ?** C'est corrigé : l'ancienne version réunissait le nom, la description et les
+> allergènes dans un seul `UPDATE`, et MySQL évalue les colonnes de gauche à droite — les `CASE` de
+> description comparaient donc les **nouveaux** noms italiens aux clés françaises et ne trouvaient
+> plus rien. Le fichier utilise désormais **une instruction par colonne** et comporte une section
+> de réparation. Réimportez-le simplement : il remet en italien les seules descriptions encore
+> dans leur version française, sans toucher aux textes que vous avez réécrits.
+
+Pour vérifier l'état des contenus à tout moment :
+
+```
+php tools/check-italian.php
+```
+
+Le script liste les plats, catégories, textes, légendes et plats du jour qui contiennent encore des
+mots français, et renvoie le code de sortie `1` s'il en reste (utilisable en CI ou avant mise en
+ligne).
 
 ## La carte (tutta in italiano)
 
