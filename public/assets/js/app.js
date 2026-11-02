@@ -12,7 +12,11 @@ addEventListener('load',()=>{
   $$('[data-n]').forEach(el=>ScrollTrigger.create({trigger:el,once:true,start:'top 92%',onEnter:()=>{const o={v:0};gsap.to(o,{v:+el.dataset.n,duration:calm?0:1.8,onUpdate:()=>el.textContent=Math.round(o.v)})}}));
 });
 const hd=$('#hd'),nav=$('#nav'),bg=$('#burger');addEventListener('scroll',()=>{hd.classList.toggle('sc',scrollY>40);$('#prog').style.width=(scrollY/(document.documentElement.scrollHeight-innerHeight)*100)+'%'},{passive:true});
-bg.onclick=()=>bg.setAttribute('aria-expanded',nav.classList.toggle('open'));$$('#nav a').forEach(a=>a.onclick=()=>{nav.classList.remove('open');bg.setAttribute('aria-expanded',false)});
+function setMenu(open){if(!nav||!bg)return;nav.classList.toggle('open',open);bg.setAttribute('aria-expanded',open?'true':'false');document.body.classList.toggle('nav-open',open)}
+if(bg&&nav)bg.onclick=()=>setMenu(!nav.classList.contains('open'));
+$$('#nav a').forEach(a=>a.onclick=()=>setMenu(false));
+addEventListener('keydown',e=>{if(e.key==='Escape')setMenu(false)});
+addEventListener('resize',()=>{if(innerWidth>960)setMenu(false)});
 const caps=$$('.cap');let capI=-1;
 function showCap(i,first){const n=caps[i],o=capI>=0?caps[capI]:null;capI=i;
   const inn=()=>{caps.forEach(c=>c.style.visibility='hidden');n.style.visibility='visible';if(calm)return;
@@ -38,6 +42,6 @@ if($('.rv'))new Swiper('.rv',{slidesPerView:1,spaceBetween:24,autoplay:{delay:55
 $$('.tabs button').forEach(b=>b.onclick=()=>{$$('.tabs button').forEach(x=>x.classList.toggle('on',x===b));$$('.dish').forEach(d=>{const s=b.dataset.c==='all'||d.dataset.c===b.dataset.c;d.hidden=!s;if(s&&!calm)gsap.from(d,{opacity:0,y:14,duration:.5})})});
 const cur=$('#cur');addEventListener('pointermove',e=>gsap.to(cur,{x:e.clientX,y:e.clientY,duration:.15}));$$('a,button').forEach(el=>{el.onmouseenter=()=>cur.classList.add('big');el.onmouseleave=()=>cur.classList.remove('big')});
 $$('#resForm,#ctForm,#nlForm').forEach(f=>f.addEventListener('submit',async e=>{e.preventDefault();const m=$('.msg',f),b=$('button.btn',f);m.classList.remove('err');m.textContent='';b.disabled=true;
-  try{const r=await fetch(f.action,{method:'POST',body:new FormData(f)}),j=await r.json();if(j.ok){m.textContent=j.message||'Envoyé.';f.reset()}else{m.classList.add('err');m.textContent=j.error||Object.values(j.errors||{}).join(' ')}}
-  catch{m.classList.add('err');m.textContent='Connexion impossible. Réessayez ou appelez-nous.'}b.disabled=false}));
+  try{const r=await fetch(f.action,{method:'POST',body:new FormData(f)}),j=await r.json();if(j.ok){m.textContent=j.message||'Inviato.';f.reset()}else{m.classList.add('err');m.textContent=j.error||Object.values(j.errors||{}).join(' ')}}
+  catch{m.classList.add('err');m.textContent='Connessione non riuscita. Riprovate o chiamateci.'}b.disabled=false}));
 $$('.lb').forEach(a=>a.onclick=e=>{e.preventDefault();const o=document.createElement('div');o.style.cssText='position:fixed;inset:0;z-index:97;background:#000e;display:grid;place-items:center;cursor:zoom-out';o.innerHTML=`<img src="${a.href}" style="max-height:90vh;max-width:92vw" alt="">`;o.onclick=()=>o.remove();document.body.append(o)});
